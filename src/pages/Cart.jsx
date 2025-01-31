@@ -35,10 +35,8 @@ export default function Cart() {
 
   return (
     <div>
+      {/** Complete props hero */}
       <Hero
-        title={"Shopping Cart"}
-        description={"Check out your cart"}
-        image={"/cart.png"}
       />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>

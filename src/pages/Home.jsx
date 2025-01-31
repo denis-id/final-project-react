@@ -1,23 +1,8 @@
-import { Link } from "react-router-dom";
+
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Star,
-  Truck,
-  Shield,
-  Clock,
-  Heart,
-  Instagram,
-  Sparkles,
-  Gift,
-  Zap,
-} from "lucide-react";
+
 import HeroIndex from "../components/home/HeroIndex";
 import Features from "../components/home/Features";
-import FeaturedCategory from "../components/home/FeaturedCategory";
-import Collection from "../components/home/Collection";
-import Benefits from "../components/home/Benefits";
-import NewArrivals from "../components/home/NewArrivals";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -42,58 +27,12 @@ export default function Home() {
       {/* Features Section */}
       <Features staggerContainer={staggerContainer} fadeIn={fadeIn} />
       {/* Featured Categories */}
-      <FeaturedCategory />
+
       {/* Collection Showcase */}
-      <Collection fadeIn={fadeIn} staggerContainer={staggerContainer} />
+
       {/* Benefits Section */}
-      <Benefits fadeIn={fadeIn} staggerContainer={staggerContainer} />
+
       {/* New Arrivals */}
-      <NewArrivals fadeIn={fadeIn} staggerContainer={staggerContainer} />
-      {/* Instagram Feed */}
-      {/* <div className="py-16 bg-gray-50">
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          className="max-w-7xl mx-auto px-4"
-        >
-          <motion.div
-            variants={fadeIn}
-            className="flex items-center justify-center gap-4 mb-12"
-          >
-            <Instagram className="w-6 h-6" />
-            <h2 className="text-3xl font-bold">Follow Us @apparel</h2>
-          </motion.div>
-          <motion.div
-            variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-6 gap-4"
-          >
-            {[
-              "photo-1515886657613-9f3515b0c78f",
-              "photo-1496747611176-843222e1e57c",
-              "photo-1589310243389-96a5483213a8",
-              "photo-1542272604-787c3835535d",
-              "photo-1548036328-c9fa89d128fa",
-              "photo-1551537482-f2075a1d41f2",
-            ].map((image, index) => (
-              <motion.a
-                key={index}
-                variants={fadeIn}
-                whileHover={{ scale: 1.05 }}
-                href="#"
-                className="block aspect-square overflow-hidden rounded-lg"
-              >
-                <img
-                  src={`https://images.unsplash.com/${image}?w=300`}
-                  alt="Instagram post"
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                />
-              </motion.a>
-            ))}
-          </motion.div>
-        </motion.div>
-      </div> */}
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         <motion.div

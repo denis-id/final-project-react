@@ -30,35 +30,13 @@ export default function ProductDetail() {
   }
 
   const handleAddToCart = () => {
-    const quantityNumber = Number(quantity);
-    // Periksa apakah item dengan warna yang sama sudah ada di keranjang
-    if (items.some((item) => item.id === product.id)) {
-      // Jika item dengan warna yang sama sudah ada di keranjang, perbarui kuantitasnya
-      const existingItem = items.find((item) => item.id === product.id);
-      const newQuantity = Number(existingItem.quantity) + quantityNumber;
-
-      updateItemQuantity(product.id, newQuantity);
-    } else {
-      // Jika item dengan warna yang sama belum ada di keranjang, tambahkan sebagai entri baru
-      addItem(
-        {
-          ...product,
-          price: product.price,
-        },
-        quantityNumber
-      );
-    }
-
-    setQuantity(1); // Reset kuantitas setelah menambahkan ke keranjang
+    // Implement logic to add the product to the cart
   };
 
   return (
     <div>
-      <Hero
-        title={"Product Detail"}
-        description={"Check out our latest products"}
-        image={product.image}
-      />
+      {/** Complete props hero */}
+      <Hero />
       <div className="max-w-7xl mx-auto px-4 py-16">
         <button
           onClick={() => navigate("/products")}

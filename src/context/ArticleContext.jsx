@@ -7,7 +7,21 @@ export const ArticleProvider = ({ children }) => {
 
   // Fungsi untuk melakukan fetch data
 
-  
+  const fetchArticles = async () => {
+    try {
+      // Fetch data articles
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchArticleById = async () => {
+    try {
+      // Fetch data article by ID
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <ArticleContext.Provider value={{}}>{children}</ArticleContext.Provider>
   );

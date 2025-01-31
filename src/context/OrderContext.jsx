@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const OrdersContext = React.createContext();
 
 export const OrderProvider = ({ children }) => {
@@ -18,6 +17,7 @@ export const OrderProvider = ({ children }) => {
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
+  
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -27,13 +27,7 @@ export const OrderProvider = ({ children }) => {
   };
   const getOrderByUserId = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/orders`, {
-        headers: {
-          Authorization: `${user.token}`,
-        },
-      });
-      console.log(response.data);
-      setOrders(response.data);
+      // Fetch data orders by user ID
     } catch (err) {
       console.log(err);
     }
@@ -41,51 +35,14 @@ export const OrderProvider = ({ children }) => {
 
   const createOrder = async () => {
     try {
-      const response = await axios.post(`localhost:8000/api/orders`, formData, {
-        headers: {
-          Authorization: `${user.token}`,
-        },
-      });
-      const data = response.data;
-      console.log("Order berhasil dibuat", data);
-      toast.success(`Order Berhasil Dibuat`, {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // Create order logic here
     } catch (err) {
       console.log(err);
-      toast.error(`Terjadi Kesalahan`, {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // Handle error
     }
   };
 
-  return (
-    <OrdersContext.Provider
-      value={{
-        orders,
-        getOrderByUserId,
-        setOrders,
-        formData,
-        setFormData,
-        createOrder,
-        handleInputChange,
-      }}
-    >
-      {children}
-    </OrdersContext.Provider>
-  );
+  return <OrdersContext.Provider value={{}}>{children}</OrdersContext.Provider>;
 };
 // make sure use
 export const useOrderContext = () => {

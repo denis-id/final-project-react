@@ -41,7 +41,6 @@ export default function ArticleDetail() {
     );
   }
 
-  console.log("article", article);
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
       <button

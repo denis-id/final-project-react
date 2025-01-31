@@ -210,13 +210,8 @@ export default function Products() {
 
   return (
     <div>
-      <Hero
-        title={"Our Products"}
-        description={"Check out our latest collection of fashion products."}
-        image={
-          "https://img.freepik.com/free-photo/arrangement-different-traveling-elements_23-2148884922.jpg?t=st=1738137007~exp=1738140607~hmac=b4a9afa17b0eb4c59bf04222b0190ca142248d140a30d8a2ee4d5b6922b8e34a&w=996"
-        }
-      />
+      {/** Complete props hero */}
+      <Hero />
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header and Search */}

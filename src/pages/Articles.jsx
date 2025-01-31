@@ -9,13 +9,8 @@ export default function Articles() {
 
   return (
     <div>
-      <Hero
-        title={"Fashion Articles"}
-        description={"Read our latest fashion articles"}
-        image={
-          "https://img.freepik.com/premium-vector/businessman-reading-daily-news-articles-tablet-screen-online-newspaper-press-mass-media-concept-desk-top-angle-view-horizontal_48369-29756.jpg?w=1800"
-        }
-      />
+      {/** Complete props hero */}
+      <Hero />
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Featured Article */}
         {featuredArticle && (

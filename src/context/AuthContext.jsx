@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const AuthContext = createContext();
 
@@ -35,28 +33,10 @@ export const AuthProvider = ({ children }) => {
 
       navigation(redirectPath, { replace: true });
       localStorage.setItem("user", JSON.stringify(data));
-      toast.success(`Login Success, Welcome ${data.name}`, {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
       navigation(-1);
       setUser(user);
     } catch (error) {
       console.error(error);
-      toast.error(`There is a problem with the server`, {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
       setError(error);
     } finally {
       setLoading(false);
@@ -76,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       console.log(err);
     }
   };
-  
+
   return (
     <AuthContext.Provider
       value={{ user, loading, error, login, logout, form, setForm }}

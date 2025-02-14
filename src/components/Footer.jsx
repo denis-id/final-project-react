@@ -118,7 +118,7 @@ export default function Footer() {
 
         {/* Footer Bottom */}
         <div className="border-t border-gray-700 mt-12 pt-6 text-gray-400 text-sm flex flex-col sm:flex-row justify-between items-center">
-          <p>© 2024 𝗞𝗼𝗵𝗶 𝗖𝗮𝗳é𝘀. {copyright}</p>
+          <p>© 2024 𝕂𝕆ℍ𝕀 ℂ𝕠𝕗𝕗𝕖é 幸. {copyright}</p>
           <div className="flex space-x-6 mt-4 sm:mt-0">
             {[privacyPolicy, termsService, cookiePolicy].map((text, id) => (
               <a key={id} href="#" className="hover:text-white transition">

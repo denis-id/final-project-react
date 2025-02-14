@@ -140,9 +140,9 @@ export default function Navbar() {
               <Link to="/menu" className="text-black hover:opacity-75">
                 {translations[language].menu}
               </Link>
-              <Link to="/about" className="text-black hover:opacity-75">
+              {/* <Link to="/about" className="text-black hover:opacity-75">
                 {translations[language].aboutHero}
-              </Link>
+              </Link> */}
               <Link to="/contact" className="text-black hover:opacity-75">
                 {translations[language].contact}
               </Link>

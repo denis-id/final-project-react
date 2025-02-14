@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Lock, User, ArrowLeft } from "lucide-react";
+import '../styles/SubmitButton.css';
+import ImgBackground from '../assets/images/formBackground.gif';
+import kohiMenu from "../assets/images/kohiMenu.png";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -10,203 +13,108 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
-
+  const [errors, setErrors] = useState({});
+  
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const getPasswordStrength = (password) => {
+    if (password.length === 0) return { text: "", color: "" };
+    if (password.length < 6) return { text: "Weak", color: "red" };
+    if (password.length <= 10) return { text: "Medium", color: "orange" };
+    return { text: "Strong", color: "green" };
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
+    if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    if (formData.confirmPassword !== formData.password) newErrors.confirmPassword = "Passwords do not match";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic here
+    setErrors({});
+    if (!validateForm()) return;
+
+    setTimeout(() => {
+      setFormData({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "" });
+      alert("Registration successful! Redirecting...");
+    }, 1000);
   };
 
+  const { text: strengthText, color: strengthColor } = getPasswordStrength(formData.password);
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <Link to="/" className="flex gap-x-2">
-          <ArrowLeft className="w-6 h-6" /> Back
+    <div className="relative min-h-screen flex items-center justify-center bg-gray-100 px-4 sm:px-6 lg:px-8">
+      <img 
+        src={ImgBackground} 
+        alt="Login Background" 
+        className="absolute inset-0 w-full h-full object-cover" 
+      />
+      <div
+        className="relative max-w-md w-full bg-white p-6 sm:p-8 rounded-2xl shadow-xl z-10">
+        <Link to="/login" className="flex items-center gap-x-2 mb-4 text-gray-700 hover:text-gray-900">
+          <ArrowLeft className="w-5 h-5" /> Back
         </Link>
+        <img
+          src={kohiMenu}
+          alt="brand logo"
+          className="w-12 h-12 rounded-full object-cover absolute top-4 right-4"
+        />
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-gray-900">Create Account</h2>
-          <p className="mt-2 text-gray-600">
-            Join APPAREL and discover premium fashion
-          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Create Account</h2>
+          <p className="mt-2 text-gray-600">Join us and discover premium coffee</p>
         </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  First Name
-                </label>
-                <div className="mt-1 relative">
+        <br />
+        <form className="submit" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {['firstName', 'lastName'].map((field, index) => (
+              <div key={index}>
+                <label className="block text-sm font-medium text-gray-700">{field === 'firstName' ? 'First Name' : 'Last Name'}</label>
+                <div className="relative">
                   <input
-                    id="firstName"
-                    name="firstName"
+                    name={field}
                     type="text"
-                    required
-                    value={formData.firstName}
+                    value={formData[field]}
                     onChange={handleChange}
-                    className="appearance-none block w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    placeholder="First name"
+                    className="block w-full px-4 py-2 pl-10 border rounded-lg focus:ring focus:ring-gray-300"
+                    placeholder={field === 'firstName' ? 'First name' : 'Last name'}
                   />
-                  <User className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                  <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
                 </div>
+                {errors[field] && <p className="text-red-600 text-sm mt-1">{errors[field]}</p>}
               </div>
+            ))}
+          </div>
 
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Last Name
-                </label>
-                <div className="mt-1 relative">
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    required
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="appearance-none block w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    placeholder="Last name"
-                  />
-                  <User className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <div className="mt-1 relative">
+          {['email', 'password', 'confirmPassword'].map((field, index) => (
+            <div key={index}>
+              <label className="block text-sm font-medium text-gray-700">{field === 'email' ? 'Email' : field === 'password' ? 'Password' : 'Confirm Password'}</label>
+              <div className="relative">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
+                  name={field}
+                  type={field.includes('password') ? 'password' : 'text'}
+                  value={formData[field]}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  placeholder="Enter your email"
+                  className="block w-full px-4 py-2 pl-10 border rounded-lg focus:ring focus:ring-gray-300"
+                  placeholder={field === 'email' ? 'Enter your email' : field === 'password' ? 'Create a password' : 'Confirm your password'}
                 />
-                <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                {field === 'email' ? <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" /> : <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />}
               </div>
+              {errors[field] && <p className="text-red-600 text-sm mt-1">{errors[field]}</p>}
+              {field === 'password' && <p style={{ color: strengthColor }} className="text-sm mt-1 font-extrabold">{strengthText}</p>}
             </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  placeholder="Create a password"
-                />
-                <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  placeholder="Confirm your password"
-                />
-                <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
-            >
-              Create Account
-            </button>
-          </div>
-
-          <div className="text-center">
-            <span className="text-gray-600">Already have an account?</span>{" "}
-            <Link
-              to="/login"
-              className="font-medium text-black hover:underline inline-flex items-center"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              Sign in
-            </Link>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <img
-                className="h-5 w-5"
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                alt="Google logo"
-              />
-              <span className="ml-2">Google</span>
-            </button>
-            <button
-              type="button"
-              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <img
-                className="h-5 w-5"
-                src="https://www.svgrepo.com/show/475647/facebook-color.svg"
-                alt="Facebook logo"
-              />
-              <span className="ml-2">Facebook</span>
-            </button>
-          </div>
+          ))}
+          <br />
+          <button type="submit" className="w-full py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all">Create Account</button>
         </form>
       </div>
     </div>

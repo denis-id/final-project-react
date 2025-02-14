@@ -1,21 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Calendar, Clock, ChevronRight } from "lucide-react";
-import { articles } from "../data/products";
+import { articles } from "../data/menu";
 import Hero from "../components/Hero";
+import BackToTop from "../components/BackToTop";
+import ChatWhatsApp from "../components/ChatWhatsApp";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Articles() {
   const featuredArticle = articles.find((article) => article.featured);
   const regularArticles = articles.filter((article) => !article.featured);
+  const navigate = useNavigate();
+  const { translations, language } = useLanguage();
 
   return (
     <div>
-      {/** Complete props hero */}
-      <Hero />
+      {/* Back to WhatsApp */}
+      <ChatWhatsApp />
+      {/* Back to Top Button */}
+      <BackToTop />
+      <Hero  
+        title={translations[language].articHero}
+        description={translations[language].articHeroDesc}/>
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Featured Article */}
         {featuredArticle && (
           <div className="mb-16">
-            <h2 className="text-2xl font-semibold mb-6">Featured Article</h2>
+            <h2 className="text-2xl font-semibold mb-6">{translations[language]?.ArticleTitle}</h2>
             <div className="grid md:grid-cols-2 gap-8 bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="relative h-[400px] md:h-auto">
                 <img
@@ -36,16 +46,12 @@ export default function Articles() {
                       {featuredArticle.readTime}
                     </div>
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">
-                    {featuredArticle.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {featuredArticle.excerpt}
-                  </p>
+                  <h3 className="text-3xl font-bold mb-4">{featuredArticle.title}</h3>
+                  <p className="text-gray-600 mb-4">{featuredArticle.excerpt}</p>
                   <p className="text-gray-500">By {featuredArticle.author}</p>
                 </div>
                 <Link
-                  to={`/articles/${featuredArticle.id}`}
+                  to={`/articleDetail/${featuredArticle.id}`}
                   className="inline-flex items-center text-black font-semibold hover:underline mt-6"
                 >
                   Read Article
@@ -86,20 +92,16 @@ export default function Articles() {
                   <h3 className="text-xl font-bold mb-3 group-hover:text-gray-600 transition-colors">
                     {article.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">
-                    {article.excerpt}
-                  </p>
+                  <p className="text-gray-600 mb-4 line-clamp-2">{article.excerpt}</p>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500 text-sm">
-                      By {article.author}
-                    </span>
-                    <Link
-                      to={`/articles/${article.id}`}
+                    <span className="text-gray-500 text-sm">By {article.author}</span>
+                    <button
+                      onClick={() => navigate(`/articleDetail/${article.id}`)}
                       className="text-black font-semibold hover:underline inline-flex items-center"
                     >
                       Read More
                       <ChevronRight className="w-4 h-4 ml-1" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>

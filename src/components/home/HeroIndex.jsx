@@ -2,62 +2,81 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-function HeroIndex() {
+import { useLanguage } from "../../context/LanguageContext";
+import heroVideo from "../../assets/videos/heroVideo.mp4";
+import { Typewriter } from "react-simple-typewriter";
+
+const HeroIndex = () => {
+  const { language, translations } = useLanguage();
+
+  const animationProps = (delay = 0, duration = 0.8) => ({
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay, duration },
+  });
+
   return (
-    <div className="relative h-[60vh] overflow-hidden">
-      <img
-        src="https://img.freepik.com/free-photo/view-hawaiian-shirt-with-floral-print-hanger-belt_23-2149366089.jpg?t=st=1738212195~exp=1738215795~hmac=74cb62fe35e7ee08fe4aa7c2b9276d98bd7d15ac8c0ec9bc7501941077b589e2&w=1800"
-        alt=""
-      />
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="absolute inset-0 flex items-center justify-center"
+    <div className="relative h-[75vh] sm:h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        aria-hidden="true"
       >
-        <div className="text-center text-white max-w-3xl px-4">
-          <motion.h1
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-6xl font-bold mb-6"
+        <source src={heroVideo} type="video/mp4" />
+      </video>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-50" />
+
+      {/* Animated Content */}
+      <motion.div
+        {...animationProps(0, 1)}
+        className="relative z-10 text-center text-white px-6 sm:px-10 max-w-4xl"
+      >
+        {/* Title with Typewriter Effect */}
+        <motion.h1
+          {...animationProps(0.3, 0.8)}
+          className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4"
+        >
+          <Typewriter
+            words={["KOHI Coffeé & Cakes"]}
+            loop={false}
+            cursor
+            cursorStyle="_"
+            typeSpeed={100}
+            deleteSpeed={50}
+          />
+        </motion.h1>
+
+        {/* Description */}
+        <motion.p
+          {...animationProps(0.4, 0.8)}
+          className="text-lg sm:text-xl mb-6 opacity-90"
+        >
+          {translations[language].discover}
+        </motion.p>
+
+        {/* Buttons */}
+        <motion.div
+          {...animationProps(0.6, 0.8)}
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
+        >
+          <Link
+            to="/menu"
+            className="bg-white text-black px-6 py-2 sm:px-8 sm:py-3 rounded-md hover:bg-red-700 inline-flex items-center justify-center transition-all"
+            aria-label=""
           >
-            Elevate Your Style
-          </motion.h1>
-          <motion.p
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-xl mb-8 opacity-90"
-          >
-            Discover our curated collection of premium apparel that combines
-            comfort, style, and sustainability.
-          </motion.p>
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="flex gap-4 justify-center"
-          >
-            <Link
-              to="/products"
-              className="bg-white text-black px-8 py-3 rounded-md hover:bg-gray-100 inline-flex items-center"
-            >
-              Shop Now
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <Link
-              to="/about"
-              className="border-2 border-white text-white px-8 py-3 rounded-md hover:bg-white hover:text-black transition-colors"
-            >
-              Learn More
-            </Link>
-          </motion.div>
-        </div>
+            {translations[language].order}
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Link>
+        </motion.div>
       </motion.div>
     </div>
   );
-}
+};
 
 export default HeroIndex;

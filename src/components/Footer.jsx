@@ -1,134 +1,130 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
+  const { language, translations } = useLanguage();
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedTime = currentTime.toLocaleTimeString("id-ID", { timeZone: "Asia/Makassar" });
+
+  const {
+    footerTitle,
+    footerDesc,
+    footerShop,
+    footerContact,
+    quickLinks,
+    customerService,
+    footerShippingInfo,
+    footerReturns,
+    footerGuide,
+    contactUs,
+    copyright,
+    privacyPolicy,
+    termsService,
+    cookiePolicy,
+  } = translations[language] || {};
+
+  const links = useMemo(
+    () => [
+      { to: "/menu", text: footerShop },
+      { to: "/contact", text: footerContact },
+      { to: "/articles", text: "Blog" },
+    ],
+    [footerShop, footerContact]
+  );
+
+  const serviceLinks = useMemo(
+    () => [footerShippingInfo, footerReturns, footerGuide],
+    [footerShippingInfo, footerReturns, footerGuide]
+  );
+
+  const contactInfo = [
+    { Icon: MapPin, text: "Jl.Padang Galak, Sanur, Denpasar Bali" },
+    { Icon: Phone, text: "+62 (823) 409-7518" },
+    { Icon: Mail, text: "denisryana2012@gmail.com" },
+  ];
+
   return (
-    <footer className="bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer className="bg-gray-900 text-white py-16">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
           {/* About Section */}
           <div>
-            <h3 className="text-xl font-bold mb-4">APPAREL</h3>
-            <p className="text-gray-400 mb-4">
-              Premium fashion brand offering high-quality clothing and
-              accessories for the modern lifestyle.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-gray-400">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-400">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-400">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-400">
-                <Youtube className="w-5 h-5" />
-              </a>
+            <h3 className="text-2xl font-bold mb-4">{footerTitle}</h3>
+            <p className="text-gray-400 mb-4">{footerDesc}</p>
+            <div className="flex space-x-4 mt-4">
+              {[Facebook, Twitter, Instagram, Youtube].map((Icon, id) => (
+                <a key={id} href="#" className="hover:text-gray-300 transition" aria-label="Social Link">
+                  <Icon className="w-6 h-6" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/products" className="text-gray-400 hover:text-white">
-                  Shop
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-400 hover:text-white">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/articles" className="text-gray-400 hover:text-white">
-                  Blog
-                </Link>
-              </li>
+            <h3 className="text-xl font-semibold mb-4">{quickLinks}</h3>
+            <ul className="space-y-3 text-gray-400">
+              {links.map(({ to, text }, id) => (
+                <li key={id}>
+                  <Link to={to} className="hover:text-white transition">
+                    {text}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Customer Service */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  Shipping Info
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  Returns
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  Size Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  FAQs
-                </a>
-              </li>
+            <h3 className="text-xl font-semibold mb-4">{customerService}</h3>
+            <ul className="space-y-3 text-gray-400">
+              {serviceLinks.map((text, id) => (
+                <li key={id}>
+                  <a href="#" className="hover:text-white transition">
+                    {text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <ul className="space-y-4">
-              <li className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span className="text-gray-400">
-                  123 Fashion Street, NY 10001
-                </span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 mr-2" />
-                <span className="text-gray-400">+1 (555) 123-4567</span>
-              </li>
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 mr-2" />
-                <span className="text-gray-400">contact@apparel.com</span>
-              </li>
+            <h3 className="text-xl font-semibold mb-4">{contactUs}</h3>
+            <ul className="space-y-4 text-gray-400">
+              {contactInfo.map(({ Icon, text }, id) => (
+                <li key={id} className="flex items-center space-x-3">
+                  <Icon className="w-5 h-5" />
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
+            {/* Live Clock for Denpasar, Bali */}
+            <div className="mt-6 text-yellow-400 font-semibold text-lg">
+              {translations[language]?.currentTime} Denpasar, Bali: {formattedTime}
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2024 APPAREL. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Privacy Policy
+        {/* Footer Bottom */}
+        <div className="border-t border-gray-700 mt-12 pt-6 text-gray-400 text-sm flex flex-col sm:flex-row justify-between items-center">
+          <p>© 2024 𝗞𝗼𝗵𝗶 𝗖𝗮𝗳é𝘀. {copyright}</p>
+          <div className="flex space-x-6 mt-4 sm:mt-0">
+            {[privacyPolicy, termsService, cookiePolicy].map((text, id) => (
+              <a key={id} href="#" className="hover:text-white transition">
+                {text}
               </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Cookie Policy
-              </a>
-            </div>
+            ))}
           </div>
         </div>
       </div>

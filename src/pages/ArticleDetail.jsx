@@ -1,30 +1,21 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Share2,
-  Facebook,
-  Twitter,
-  Linkedin,
-} from "lucide-react";
-import { articles } from "../data/products";
-import {
-  fadeIn,
-  fadeInLeft,
-  fadeInRight,
-  staggerContainer,
-} from "../utils/animations";
+import author from "../assets/Author/author.jpeg";
+import { ArrowLeft, Calendar, Clock, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
+import { articles } from "../data/menu";
+import { fadeInLeft, fadeInRight, staggerContainer } from "../utils/animations";
+
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
 export default function ArticleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const article = articles.find((a) => a.id === parseInt(id));
-  const relatedArticles = articles
-    .filter((a) => a.id !== parseInt(id))
-    .slice(0, 3);
+  const relatedArticles = articles.filter((a) => a.id !== parseInt(id)).slice(0, 3);
 
   if (!article) {
     return (
@@ -43,31 +34,29 @@ export default function ArticleDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
+    {/* back to articles button */}
       <button
-        variants={fadeIn}
-        initial="initial"
-        animate="animate"
         onClick={() => navigate("/articles")}
-        className="mb-8 text-gray-600 hover:text-black inline-flex items-center gap-2"
+        className="mb-8 text-gray-600 hover: underline text-black inline-flex items-center gap-2"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Articles
-      </button>
+      </button>     
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Main Content */}
-        <div
+      {/* main content */}
+        <motion.div
           variants={fadeInLeft}
-          initial="initial"
-          animate="animate"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0, transition: { duration: 0.6 } }}
           className="lg:col-span-2"
         >
-          <img
+          <motion.img
             variants={fadeIn}
             src={article.image}
             alt={article.title}
             className="w-full h-[400px] object-cover rounded-xl mb-8"
           />
-
           <div className="flex items-center gap-6 text-gray-600 mb-6">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -78,39 +67,13 @@ export default function ArticleDetail() {
               {article.readTime}
             </div>
           </div>
-
           <h1 className="text-4xl font-bold mb-6">{article.title}</h1>
-
           <div className="prose prose-lg max-w-none">
-            <p className="text-gray-600 mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <h2 className="text-2xl font-bold mt-8 mb-4">
-              The Evolution of Fashion
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-              cupidatat non proident, sunt in culpa qui officia deserunt mollit
-              anim id est laborum.
-            </p>
-            <blockquote className="border-l-4 border-black pl-4 italic my-8">
-              "Fashion is not something that exists in dresses only. Fashion is
-              in the sky, in the street, fashion has to do with ideas, the way
-              we live, what is happening."
-            </blockquote>
-            <p className="text-gray-600 mb-6">
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-              quae ab illo inventore veritatis et quasi architecto beatae vitae
-              dicta sunt explicabo.
-            </p>
+            <p className="text-gray-600 mb-6">{article.excerpt}</p>
+            <p className="text-gray-600 mb-6">{article.content}</p>
           </div>
 
-          {/* Share Section */}
+          {/* share section */}
           <div className="border-t border-gray-200 mt-12 pt-8">
             <div className="flex items-center gap-4">
               <span className="font-semibold flex items-center gap-2">
@@ -130,33 +93,26 @@ export default function ArticleDetail() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Sidebar */}
-        <div
+        {/* sidebar */}
+        <motion.div
           variants={fadeInRight}
-          initial="initial"
-          animate="animate"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0, transition: { duration: 0.6 } }}
           className="lg:col-span-1"
         >
           <div className="sticky top-24">
             <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-            <div
+            <motion.div
               variants={staggerContainer}
               initial="initial"
               animate="animate"
               className="space-y-6"
             >
               {relatedArticles.map((relatedArticle) => (
-                <div
-                  key={relatedArticle.id}
-                  variants={fadeIn}
-                  className="group"
-                >
-                  <Link
-                    to={`/articles/${relatedArticle.id}`}
-                    className="flex gap-4"
-                  >
+                <motion.div key={relatedArticle.id} variants={fadeIn} className="group">
+                  <Link to={`/articles/${relatedArticle.id}`} className="flex gap-4">
                     <div className="w-24 h-24 overflow-hidden rounded-lg">
                       <img
                         src={relatedArticle.image}
@@ -180,29 +136,34 @@ export default function ArticleDetail() {
                       </div>
                     </div>
                   </Link>
-                </div>
+                </motion.div>
               ))}
+            </motion.div>
+          </div>
+            {/* background */}
+            <div className="mt-12 p-6rounded-xl w-80" style={{backgroundColor:'#EFE8D9'}}>          
+            <div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxQH8Hzyv8Lq0Wq3EgMP-UHuz_jKbbArerIQ&s" className="rounded-full object-cover" alt="" />          
             </div>
-
-            {/* Author Info */}
-            <div className="mt-12 p-6 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100"
-                  alt={article.author}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-                <div>
-                  <h3 className="font-semibold">{article.author}</h3>
-                  <p className="text-gray-600 text-sm">Fashion Writer</p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm">
-                A passionate fashion writer with over 10 years of experience in
-                the industry. Specializes in sustainable fashion and emerging
-                trends.
-              </p>
+            </div>      
+        </motion.div>
+                {/* author info */}
+                <div className="flex justify-end">
+          <div className="mt-12 p-6 bg-gray-50 rounded-xl w-80">
+            <div className="flex items-center gap-4 mb-4">
+              <img
+              src={author}
+              alt={article.author}
+              className="w-16 h-16 rounded-full object-cover"
+              />
+            <div>
+              <h3 className="font-semibold">Denis</h3>
+              <p className="text-gray-600 text-sm">Founder Kohi Coffeè</p>
             </div>
+            </div>
+            <p className="text-gray-600 text-sm">
+             I'm a Founder of Kohi Coffeè with concept of Japan, a Web Developer and a Digital Marketing for over 5 years in industry.
+            </p>
           </div>
         </div>
       </div>

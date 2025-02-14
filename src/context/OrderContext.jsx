@@ -27,7 +27,8 @@ export const OrderProvider = ({ children }) => {
   };
   const getOrderByUserId = async () => {
     try {
-      // Fetch data orders by user ID
+      const response = await axios.get(`${process.env.API_URL}/api/orders/${user.id}`);
+      setOrders(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -35,14 +36,17 @@ export const OrderProvider = ({ children }) => {
 
   const createOrder = async () => {
     try {
-      // Create order logic here
+      const response =  await axios.post(
+        `${process.env.API_URL}/api/orders`,
+        JSON.stringify(formData),
+      )
     } catch (err) {
       console.log(err);
       // Handle error
     }
   };
 
-  return <OrdersContext.Provider value={{}}>{children}</OrdersContext.Provider>;
+  return <OrdersContext.Provider value={{orders, formData, handleInputChange, getOrderByUserId, createOrder}}>{children}</OrdersContext.Provider>;
 };
 // make sure use
 export const useOrderContext = () => {

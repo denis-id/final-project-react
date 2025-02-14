@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useMemo } from "react";
-import { products } from "../data/products";
+import { menu } from "../data/menu";
 
 const FilterContext = createContext();
 
@@ -10,15 +10,15 @@ export function FilterProvider({ children }) {
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
-  const productsPerPage = 6;
+  const menuPerPage = 6;
 
   const categories = useMemo(
-    () => ["All", ...new Set(products.map((p) => p.category))],
+    () => ["All", ...new Set(menu.map((p) => p.category))],
     []
   );
 
-  const filteredAndSortedProducts = useMemo(() => {
-    let result = [...products];
+  const filteredAndSortedMenu = useMemo(() => {
+    let result = [...menu];
 
     // Category filter
     if (selectedCategory !== "All") {
@@ -62,15 +62,15 @@ export function FilterProvider({ children }) {
     }
 
     return result;
-  }, [products, selectedCategory, sortBy, searchQuery, priceRange]);
+  }, [menu, selectedCategory, sortBy, searchQuery, priceRange]);
 
   // Pagination
   const totalPages = Math.ceil(
-    filteredAndSortedProducts.length / productsPerPage
+    filteredAndSortedMenu.length / menuPerPage
   );
-  const paginatedProducts = filteredAndSortedProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
+  const paginatedMenu = filteredAndSortedMenu.slice(
+    (currentPage - 1) * menuPerPage,
+    currentPage * menuPerPage
   );
 
   const clearFilters = () => {
@@ -95,11 +95,11 @@ export function FilterProvider({ children }) {
         currentPage,
         setCurrentPage,
         categories,
-        filteredAndSortedProducts,
-        paginatedProducts,
+        filteredAndSortedMenu,
+        paginatedMenu,
         totalPages,
         clearFilters,
-        productsPerPage,
+        menuPerPage,
         viewMode,
         setViewMode,
       }}

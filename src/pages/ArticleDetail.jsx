@@ -5,6 +5,8 @@ import { ArrowLeft, Calendar, Clock, Share2, Facebook, Twitter, Linkedin } from 
 import { articles } from "../data/menu";
 import { fadeInLeft, fadeInRight, staggerContainer } from "../utils/animations";
 import { useLanguage } from "../context/LanguageContext";
+import BackToTop from "../components/BackToTop";
+import ChatWhatsApp from "../components/ChatWhatsApp";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -25,6 +27,10 @@ const ArticleDetail = () => {
   if (!article) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+         {/* Back to WhatsApp */}
+      <ChatWhatsApp />
+      {/* Back to Top Button */}
+      <BackToTop />
         <h2 className="text-2xl font-bold mb-4">{articlesNotFound}</h2>
         <button
           onClick={() => navigate("/articles")}
@@ -40,6 +46,10 @@ const ArticleDetail = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
+          {/* Back to WhatsApp */}
+    <ChatWhatsApp />
+    {/* Back to Top Button */}
+    <BackToTop />
       <button
         onClick={() => navigate("/articles")}
         aria-label={backToArticles}
@@ -127,7 +137,7 @@ const Sidebar = ({ relatedArticles, articleTranslation }) => (
     className="lg:col-span-1"
   >
     <div className="sticky top-24">
-      <h2 className="text-2xl font-bold mb-6">{articleTranslation?.relatedArticles}</h2>
+      <h2 className="text-2xl font-bold mb-6">Article:</h2>
       <motion.div
         variants={staggerContainer}
         initial="initial"

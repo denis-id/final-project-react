@@ -69,7 +69,7 @@ export default function MenuDetail() {
       <ChatWhatsApp />
       <BackToTop />
 
-      {menuItem.image && <Hero title="Menu Detail" description="" image={menuItem.image} />}
+      {menuItem.image && <Hero title={t?.coverMenuDetailTitle}description={t?.menuDetailDesc} image={menuItem.image} />}
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         <button

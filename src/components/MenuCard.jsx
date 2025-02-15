@@ -78,7 +78,9 @@ export default function MenuCard({ menu, viewMode = "grid" }) {
           to={`/menu/${menu.id}`}
           className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors w-fit mt-4"
         >
-         <ShoppingBag className="w-5 h-5" /> {translations[language].viewDetails}
+         <ShoppingBag className="w-5 h-5" 
+         /> 
+         {translations[language].viewDetails}
         </Link>
       </div>
 
@@ -106,7 +108,8 @@ export default function MenuCard({ menu, viewMode = "grid" }) {
               to={`/menu/${menu.id}`}
               className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors w-fit mt-4"
             >
-              <Eye className="w-4 h-4" />
+              <ShoppingBag className="w-5 h-5" 
+              /> 
               {translations[language].viewDetails}
             </Link>
           </div>

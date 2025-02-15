@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FilterProvider } from "./context/FilterContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import './styles/Button.css';
@@ -37,34 +38,36 @@ function App() {
         <SPLoader />
       ) : (
         <Router>
-          <CartProvider>
-            <ArticleProvider>
-              <OrderProvider>
-                <FilterProvider>
-                  <div className="min-h-screen flex flex-col" style={{backgroundColor:'#EFE8D9'}}>
-                    <main className="flex-grow">
-                      <Routes>
-                        <Route element={<Layout />}>
-                          <Route path="/" element={<Home />} />
-                          <Route path="/menu" element={<Menu />} />
-                          <Route path="/about" element={<About />} />
-                          <Route path="/contact" element={<Contact />} />
-                          <Route path="/articles" element={<Articles />} />
-                          <Route path="/articles/:id" element={<ArticleDetail />} />
-                          <Route path="/articleDetail/:id" element={<ArticleDetail />} />
-                          <Route path="/cart" element={<Cart />} />
-                          <Route path="/checkout" element={<Checkout />} />
-                          <Route path="/menu/:id" element={<MenuDetail />} />
-                        </Route>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </FilterProvider>
-              </OrderProvider>
-            </ArticleProvider>
-          </CartProvider>
+          <LanguageProvider>
+            <CartProvider>
+              <ArticleProvider>
+                <OrderProvider>
+                  <FilterProvider>
+                    <div className="min-h-screen flex flex-col" style={{backgroundColor:'#EFE8D9'}}>
+                      <main className="flex-grow">
+                        <Routes>
+                          <Route element={<Layout />}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/articles" element={<Articles />} />
+                            <Route path="/articles/:id" element={<ArticleDetail />} />
+                            <Route path="/articleDetail/:id" element={<ArticleDetail />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/menu/:id" element={<MenuDetail />} />
+                          </Route>
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
+                        </Routes>
+                      </main>
+                    </div>
+                  </FilterProvider>
+                </OrderProvider>
+              </ArticleProvider>
+            </CartProvider>
+          </LanguageProvider>
         </Router>
       )}
     </>

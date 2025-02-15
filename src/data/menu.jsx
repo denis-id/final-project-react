@@ -7,7 +7,7 @@ export const menu = [
     price: 24000,
     image: "https://www.livingnorth.com/images/media/articles/food-and-drink/eat-and-drink/coffee.png?fm=pjpg&w=1000&q=95",
     category: "House Blend Coffee",
-    description: "Cappucino Espresso composed with of a single, double, or triple espresso shot and hot milk.",
+    description: "A cappuccino is a strong coffee drink made with espresso, steamed milk, and milk foam. The espresso is a concentrated coffee made by forcing hot water through finely ground coffee beans.",
   },
   {
     id: 2,
@@ -99,7 +99,7 @@ export const menu = [
   },
   {
     id: 13,
-    name: "Kopi Tubruk",
+    name: "Tubruk Coffee",
     price: 13000,
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRhzqgPGg9_iQMzxlUBom-t67z1b41YyjyaMW0GLyTR6cSy3t45PgInJTph6fsJEpVTtcxuPHEH42NC6AjLYMZz4RWdgl66znUZXAd0hU",
     category: "Traditional Coffee",
@@ -111,7 +111,7 @@ export const menu = [
     price: 15000,
     image: "https://specialtycoffee.id/wp-content/uploads/elementor/thumbs/brewing-balinese-coffee-qvnejqmjlomj0finig7cwnpd3ssyb47aiho5nd5b0g.webp",
     category: "Traditional Coffee",
-    description: "Brewing balinese coffee, with its unique flavors and cultural significance, offers a delightful experience that transcends mere caffeine consumption.",
+    description: "Balinese coffee, it's a traditional coffee from Bali with its unique flavors and cultural significance, offers a delightful experience that transcends mere caffeine consumption.",
   }, 
   {
     id: 15,
@@ -143,7 +143,7 @@ export const menu = [
     price: 23500,
     image: "https://sakiproducts.com/cdn/shop/articles/20230310181037-thai-tea-recipe_1920x1080.webp?v=1678471844",
     category: "Non Coffee",
-    description: "Thai tea typically made with black tea, condensed milk, and spices, and served iced.",
+    description: "Thai tea made with black tea, condensed milk, and spices, and served iced.",
   },
   {
     id: 19,
@@ -247,7 +247,7 @@ export const menu = [
     price: 20000,
     image: "https://hikarimiso.com/wp-content/uploads/2024/05/Trimmed_03_Miso-Ramen_02_M.jpg",
     category: "Japan Appetizer",
-    description: "Ramen is a Japanese noodle soup, with a combination of a rich flavoured broth, one of a variety of types of noodle and a selection of meats or vegetables, often topped with a boiled egg",
+    description: "Ramen is a Japanese noodle soup, with a combination of a rich flavoured broth, one of a variety of types of noodle and a selection of meats or vegetables, often topped with a boiled egg.",
   },
   {
     id: 32,
@@ -271,7 +271,7 @@ export const menu = [
     price: 28000,
     image: "https://www.kikkoman.eu/fileadmin/_processed_/a/d/csm_945-recipe-page-gunkan-maki-sushi-with-prawn-cucumber_desktop_4f0532822c.jpg",
     category: "Japan Appetizer",
-    description: "Sushi is traditionally made with medium-grain white rice, although it can also be prepared with brown rice or short-grain rice. It is commonly prepared with seafood, such as squid, eel, yellowtail, salmon, tuna or imitation crab meat. ",
+    description: "Sushi is traditionally made with medium-grain white rice, although it can also be prepared with brown rice or short-grain rice. It is commonly prepared with seafood, such as squid, eel, yellowtail, salmon, tuna or imitation crab meat.",
   },
  
   {
@@ -297,8 +297,7 @@ export const articles = [
   {
     id: 1,
     title: "The Art of Brewing the Perfect Coffee",
-    excerpt:
-      "Exploring how sustainable practices are reshaping the fashion industry and what it means for consumers.",
+    excerpt: "Exploring how sustainable practices are reshaping the fashion industry and what it means for consumers.",
     content: "Coffee is one of the most beloved beverages worldwide, with a rich history that dates back centuries. Whether you  enjoy a cup of espresso, cappuccino, or just a simple brewed cup, there's something magical about the aroma and  flavor that brings joy to so many people. In this article, we explore the art of brewing the perfect cup of coffee and what makes each brewing method unique.",
     image: "https://www.kafeido.com/cdn/shop/articles/the-art-of-specialty-coffee-brewing-tips-tricks-for-making-the-perfect-cup-869820.jpg?v=1718579846&width=1100",
     date: "2024-03-15",
@@ -309,25 +308,23 @@ export const articles = [
   {
     id: 2,
     title: "Coffee and chronic liver disease or cancer",
-    excerpt:
-      "Discover the hottest trends that will dominate the fashion scene this spring season.",
+    excerpt: "Discover about consume coffee that related with chronic liver for our health.",
     content: "In 2019, a literature reviewTrusted Source concluded that coffee intake is likely to reduce the risk of liver cancer.Earlier, in 2015, a cohort study of a multiethnic population in the United States suggested that depending on the dose, consuming two to three cups of coffee daily reduced the participants’ risk of developing hepatocellular carcinoma and chronic liver disease (CLD) by 38% and 46%Trusted Source, respectively.The meta-analysis from 2017Trusted Source also concluded that consuming any type of coffee appears to reduce the risk of liver cancer, nonalcoholic fatty liver disease, and cirrhosis. These findings are now bolstered by a 2021 studyTrusted Source suggesting that consuming all types of coffee may offer some protection against CLD.",
     image: "https://cdn.images.express.co.uk/img/dynamic/11/590x/Tea-814148.jpg?r=1686998680160",
     date: "2024-03-10",
     author: "Chen",
-    readTime: "5 min read",
+    readTime: "10 min read",
     featured: false,
   },
   {
     id: 3,
-    title: "Coffee and obesity",
-    excerpt:
-      "Master the technique of layering clothes for both style and functionality.",
+    title: "Coffee & obesity",
+    excerpt: "Master the technique of layering clothes for both style and functionality.",
     content: "There is some evidence suggesting that consuming coffee may help people lose weight. One 2018 paperTrusted Source indicated that the more coffee the participants drank, the higher their mean reduction in weight, body mass index (BMI), and fat mass.A 2019 studyTrusted Source suggested that drinking coffee may have a modest association with weight loss, with a greater association in men than in women. However, these results have not been replicated, so they may not be definitive.Although coffee may provide some benefits in reducing obesity, it is not a substitute for eating  balanced diet and exercising often.",
     image: "https://www.careinsurance.com/upload_master/media/posts/July2024/black-coffee-benefits.webp",
     date: "2024-03-08",
     author: "Shikagawa",
-    readTime: "6 min read",
+    readTime: "7 min read",
     featured: false,
   },
   {
@@ -356,7 +353,7 @@ export const articles = [
     id: 6,
     title: "Exposure to toxic ingredients",
     excerpt: "Exposure to toxic ingredients in coffee.",
-    content: "The potential ingestion of harmful chemicals like pesticides, herbicides, mycotoxins (mold), and heavy metals that can be present in coffee beans due to farming practices, processing, or storage conditions, which can cause health issues when consumed, particularly with regular high intake; the most common toxin associated with coffee is ochratoxin A, a mycotoxin that can lead to liver and kidney damage if exposure is significant. ",
+    content: "The potential ingestion of harmful chemicals like pesticides, herbicides, mycotoxins (mold), and heavy metals that can be present in coffee beans due to farming practices, processing, or storage conditions, which can cause health issues when consumed, particularly with regular high intake; the most common toxin associated with coffee is ochratoxin A, a mycotoxin that can lead to liver and kidney damage if exposure is significant.",
     image: "https://gimmethegoodstuff.org/wp-content/uploads/toxins-in-coffee-gimme-the-good-stuff-2.webp",
     date: "2024-03-01",
     author: "Nakamura",
@@ -367,7 +364,7 @@ export const articles = [
     id: 7,
     title: "Anxiety",
     excerpt: "How caffeine affects anxiety?",
-    content: "Consuming high amounts of caffeine may increase the riskTrusted Source of anxiety, especially among people with panic disorder or social anxiety disorder. Less commonly, caffeine may trigger mania and psychosis in those who are susceptible.",
+    content: "With consuming high amounts of caffeine may increase the riskTrusted Source of anxiety, especially among people with panic disorder or social anxiety disorder. Less commonly, caffeine may trigger mania and psychosis in those who are susceptible.",
     image: "https://www.verywellmind.com/thmb/vqGDqVURdYuOqlqRDt9uVPfXK1o=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-962252482-eef6fa5433ea4921bc40293a60787d3c.jpg",
     date: "2024-02-28",
     author: "Okinawa",

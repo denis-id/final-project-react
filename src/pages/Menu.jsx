@@ -32,7 +32,7 @@ const FilterSidebar = ({
       <div className="relative flex-1 md:w-64">
         <input
           type="text"
-          placeholder="Search menu..."
+          placeholder={translations[language].searchMenu}
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);

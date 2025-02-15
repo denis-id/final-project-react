@@ -1,57 +1,62 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import axios from "axios";
+import { useLanguage } from "./LanguageContext"; 
 
 // Create a context for articles
-const ArticleContext = React.createContext();
+const ArticleContext = createContext();
 
-// Define the initial state for articles
-const initialState = {
-  loading: true,
-  error: null,
-  articles: [],
-  article: {},
-};
-
-// Define the ArticleProvider component
 export const ArticleProvider = ({ children }) => {
-  const [state, setState] = useState(initialState);
-  const [article, setArticle] = useState ({});
-  const [articles, setArticles] = useState ({});
-  const [loading, setLoading] = useState (false);
+  const { language, translations } = useLanguage(); 
+  const [articles, setArticles] = useState([]); 
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  const API_URL = process.env.API_URL || "http://localhost:5000"; 
+
+  // Fetch all articles
   const fetchArticles = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get(`${process.env.API_URL}/api/article`);
+      const response = await axios.get(`${API_URL}/api/article`);
       setArticles(response.data);
-      setLoading(false); 
-     } catch (err) {
-        console.error(err);
-      }
+    } catch (err) {
+      console.error("Error fetching articles:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-      const fetchArticleById = async (id) => {
-        try {
-          const response = await axios.get(`${process.env.API_URL}/api/article/${id}`);
-          setArticle(response.data);
-      } catch(err) {
-        console.error(err);
-      }
-      }
+  // Fetch a single article by ID
+  const fetchArticleById = async (id) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/api/article/${id}`);
+      setArticle(response.data);
+    } catch (err) {
+      console.error("Error fetching article:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Fetch articles when the component mounts
+  // Fetch articles on mount
   useEffect(() => {
     fetchArticles();
   }, []);
 
-  // Return the ArticleContext.Provider with the state and functions
   return (
-    <ArticleContext.Provider value={{ ...state, loading, fetchArticles, article, articles, fetchArticleById }}>
+    <ArticleContext.Provider
+      value={{ articles, article, loading, error, fetchArticles, fetchArticleById, translations, language }}
+    >
       {children}
     </ArticleContext.Provider>
   );
 };
 
-// Define a hook to use the ArticleContext
+// Hook to use the ArticleContext
 export const useArticleContext = () => {
   return useContext(ArticleContext);
 };

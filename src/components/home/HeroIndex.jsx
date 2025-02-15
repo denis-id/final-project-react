@@ -25,9 +25,19 @@ const HeroIndex = () => {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
         aria-hidden="true"
-      >
+        onError={(e) => {
+        e.target.style.display = "none";
+        document.getElementById("fallback-image").style.display = "block";
+        }}
+        >{translations[language]?.videoTag}
         <source src={heroVideo} type="video/mp4" />
       </video>
+      <img
+        id="fallback-image"
+        src="/path-to-image/heroImage.jpg"
+        alt="Fallback background"
+        className="absolute inset-0 w-full h-full object-cover hidden"
+      />
 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50" />
@@ -57,7 +67,7 @@ const HeroIndex = () => {
           {...animationProps(0.4, 0.8)}
           className="text-lg sm:text-xl mb-6 opacity-90"
         >
-          {translations[language].discover}
+          {translations[language]?.discover}
         </motion.p>
 
         {/* Buttons */}
@@ -70,7 +80,7 @@ const HeroIndex = () => {
             className="bg-white text-black px-6 py-2 sm:px-8 sm:py-3 rounded-md hover:bg-red-700 inline-flex items-center justify-center transition-all"
             aria-label=""
           >
-            {translations[language].order}
+            {translations[language]?.order}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         </motion.div>

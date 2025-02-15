@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Eye, Heart, Star, X } from "lucide-react";
+import { Eye, Heart, Star, X, ShoppingBag } from "lucide-react";
 import { formatPrice } from "../utils/helper";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -56,7 +56,7 @@ export default function MenuCard({ menu, viewMode = "grid" }) {
           className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0      group-hover:opacity-100 transition-opacity duration-300">
-          <Eye className="w-14 h-14 text-white" 
+          <Eye className="w-8 h-8 text-white" 
           /> <span className="text-white text-lg font-semibold">             
             {translations[language].clickMenu}
           </span>
@@ -73,11 +73,12 @@ export default function MenuCard({ menu, viewMode = "grid" }) {
         <p className="text-gray-600 mt-1">{formatPrice(menu.price)}</p>
         <div className="flex items-center mt-2">{renderStars()}</div>
         <p className="text-gray-600 mt-1">Rating: {rating} / 5</p>
+        {/* <p className="text-gray-500 mt-2"> {translations[language]?.menu?.find((item) => item.id === menu.id)?.description || "No description available"}</p> */}
         <Link
           to={`/menu/${menu.id}`}
           className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors w-fit mt-4"
         >
-         🛒 {translations[language].viewDetails}
+         <ShoppingBag className="w-5 h-5" /> {translations[language].viewDetails}
         </Link>
       </div>
 
@@ -100,7 +101,7 @@ export default function MenuCard({ menu, viewMode = "grid" }) {
             <p className="text-gray-600">{formatPrice(menu.price)}</p>
             <div className="flex items-center mt-2">{renderStars()}</div>
             <p className="text-gray-600 mt-1">Rating: {rating} / 5</p>
-            <p className="text-gray-500 mt-2">{menu.description}</p>
+            <p className="text-gray-500 mt-2"> {translations[language]?.menu?.find((item) => item.id === menu.id)?.description || "No description available"}</p>
             <Link
               to={`/menu/${menu.id}`}
               className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors w-fit mt-4"

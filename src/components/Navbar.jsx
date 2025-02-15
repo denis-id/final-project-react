@@ -11,7 +11,7 @@ export default function Navbar() {
   const { items } = useCart();
   const { language, translations, toggleLanguage } = useLanguage();
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = items?.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -61,7 +61,7 @@ export default function Navbar() {
                 isScrolled ? "text-black" : "text-white"
               }`}
             >
-              {translations[language]?.menu}
+              {translations[language]?.navbarMenu}
             </Link>
             {/* <Link
               to="/about"
@@ -85,7 +85,7 @@ export default function Navbar() {
                 isScrolled ? "text-black" : "text-white"
               }`}
             >
-              {translations[language]?.articles}
+              {translations[language]?.navbarArticles}
             </Link>
             <Link to="/cart" className="relative">
               <ShoppingCart
@@ -134,37 +134,26 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden pb-4">
             <div className="flex flex-col space-y-4">
-              <Link to="/" className="text-black hover:opacity-75">
-               {translations[language].home}
-              </Link>
-              <Link to="/menu" className="text-black hover:opacity-75">
-                {translations[language].menu}
-              </Link>
-              {/* <Link to="/about" className="text-black hover:opacity-75">
-                {translations[language].aboutHero}
-              </Link> */}
-              <Link to="/contact" className="text-black hover:opacity-75">
-                {translations[language].contact}
-              </Link>
-              <Link to="/articles" className="text-black hover:opacity-75">
-                {translations[language].articles}
-              </Link>
+              {[
+                { path: "/", label: "home" },
+                { path: "/menu", label: "navbarMenu" },
+                { path: "/contact", label: "contact" },
+                { path: "/articles", label: "navbarArticles" },
+                { path: "/login", label: "login" }
+              ].map(({ path, label }) => (
+                <Link key={path} to={path} className="text-black hover:opacity-75">
+                  {translations[language]?.[label] || label}
+                </Link>
+              ))}
               <Link to="/cart" className="flex items-center text-black hover:opacity-75">
                 <ShoppingCart className="w-6 h-6 mr-2" />
                 <span>
-                  {translations[language].cart} ({totalItems})
+                  {translations[language]?.cart || "Cart"} ({totalItems})
                 </span>
               </Link>
-              <Link to="/login" className="text-black hover:opacity-75">
-                {translations[language].login}
-              </Link>
-                 {/* Mobile Language Toggle */}
-             <center>
-                <button
-                  onClick={toggleLanguage}
-                  className="button"
-                >
-                  {translations[language].toggleLanguage}
+              <center>
+                <button onClick={toggleLanguage} className="button">
+                  {translations[language]?.toggleLanguage || "Change Language"}
                 </button>
               </center>
             </div>

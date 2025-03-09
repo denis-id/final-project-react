@@ -67,17 +67,11 @@ export default function Home() {
       {/* woman cover */}
       <Layouts />
 
-      {/* Catalog Section */}
-      {/* <Catalog /> */}
-
       {/* services */}
       <Services />
 
        {/* Features Section */}
        <Features staggerContainer={staggerContainer} fadeIn={fadeIn} />
-
-      {/* Newsletter Section */}
-      {/* <NewsletterSection /> */}
 
        {/* discoverImage */}
        <Discover />
@@ -85,48 +79,3 @@ export default function Home() {
     </div>
   );
 }
-
-// Newsletter Component
-// function NewsletterSection() {
-//   const { translations, language } = useLanguage();
-  
-//   return (
-//     <div className="max-w-7xl mx-auto px-4 py-16">
-//       <motion.div
-//         variants={fadeIn}
-//         initial="initial"
-//         whileInView="animate"
-//         viewport={{ once: true }}
-//         className="bg-black text-white rounded-2xl p-12 text-center relative overflow-hidden"
-//       >
-//         <motion.div
-//           initial={{ scale: 0.8, opacity: 0 }}
-//           whileInView={{ scale: 1, opacity: 1 }}
-//           transition={{ duration: 0.6 }}
-//         >
-//           <h2 className="text-3xl font-bold mb-4 sm:text-2xl">
-//             {translations[language]?.newsletterTitle}
-//           </h2>
-//           <p className="mb-8 opacity-90 sm:text-sm">
-//             {translations[language]?.newsletterText}
-//           </p>
-//           <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-//             <input
-//               type="email"
-//               placeholder={translations[language]?.emailPlaceholder}
-//               className="flex-1 px-4 py-3 rounded-md text-black mb-4 sm:mb-0"
-//             />
-//             <motion.button
-//               whileHover={{ scale: 1.05 }}
-//               whileTap={{ scale: 0.95 }}
-//               type="submit"
-//               className="button"
-//             >
-//               {translations[language]?.subscribe}
-//             </motion.button>
-//           </form>
-//         </motion.div>
-//       </motion.div>
-//     </div>
-//   );
-// }

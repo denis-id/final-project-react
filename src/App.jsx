@@ -19,23 +19,29 @@ import SPLoader from "./components/SpinnerLoader";
 import { useState, useEffect } from "react";
 import { ArticleProvider } from "./context/ArticleContext";
 import { OrderProvider } from "./context/OrderContext";
+import WelcomeAnnouncer from "./components/WelcomeAnnouncer";
 
 function App() {
+  const [showAnnouncer, setShowAnnouncer] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate a loading delay (e.g., fetching data)
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false); // Set to false after 5 seconds to hide the loader
+      setIsLoading(false); 
+      setShowAnnouncer(true);
     }, 5000);
 
-    return () => clearTimeout(timer); // Clean up the timer on unmount
+    return () => clearTimeout(timer); 
   }, []);
 
+  const handleContinue = () => setShowAnnouncer(false);
+
   return (
-    <>
-      {isLoading ? (
+    <div>
+       {isLoading ? (
         <SPLoader />
+      ) : showAnnouncer ? (
+        <WelcomeAnnouncer onContinue={handleContinue} />
       ) : (
         <Router>
           <LanguageProvider>
@@ -70,7 +76,7 @@ function App() {
           </LanguageProvider>
         </Router>
       )}
-    </>
+    </div>
   );
 }
 

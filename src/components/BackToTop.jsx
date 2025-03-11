@@ -30,7 +30,7 @@ const BackToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-2 right-1 bg-orange-500 text-white p-3 rounded-full shadow-md hover:bg-black transition-all" 
+          className="fixed bottom-3 right-3 bg-orange-500 text-white p-3 rounded-full shadow-md hover:bg-black transition-all" 
           style={{zIndex:'9999'}}
         >
           <FaArrowUp />

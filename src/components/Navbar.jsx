@@ -19,6 +19,14 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navLinks = [
+    { path: "/", label: "home" },
+    { path: "/menu", label: "navbarMenu" },
+    { path: "/contact", label: "contact" },
+    { path: "/articles", label: "navbarArticles" },
+    { path: "/login", label: "login" }
+  ];
+
   return (
     <>
       <nav
@@ -30,7 +38,7 @@ export default function Navbar() {
           <div className="flex justify-between h-16 items-center">
             <img
               src={kohiMenu}
-              alt=""
+              alt="Kohi Coffee Logo"
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex items-center">
@@ -47,38 +55,17 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/"
-                className={`hover:opacity-75 transition-colors ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                {translations[language]?.home}
-              </Link>
-              <Link
-                to="/menu"
-                className={`hover:opacity-75 transition-colors ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                {translations[language]?.navbarMenu}
-              </Link>
-              <Link
-                to="/contact"
-                className={`hover:opacity-75 transition-colors ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                {translations[language]?.contact}
-              </Link>
-              <Link
-                to="/articles"
-                className={`hover:opacity-75 transition-colors ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                {translations[language]?.navbarArticles}
-              </Link>
+              {navLinks.map(({ path, label }) => (
+                <Link
+                  key={label}
+                  to={path}
+                  className={`hover:opacity-75 transition-colors ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  {translations[language]?.[label] || label}
+                </Link>
+              ))}
               <Link to="/cart" className="relative">
                 <ShoppingCart
                   className={`w-6 h-6 transition-colors ${
@@ -90,14 +77,6 @@ export default function Navbar() {
                     {totalItems}
                   </span>
                 )}
-              </Link>
-              <Link
-                to="/login"
-                className={`hover:opacity-75 transition-colors ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                {translations[language]?.login}
               </Link>
             </div>
 
@@ -123,8 +102,8 @@ export default function Navbar() {
           {isMenuOpen && (
             <div className="md:hidden pb-4">
               <div className="flex flex-col space-y-4">
-                {["home", "navbarMenu", "contact", "navbarArticles", "login"].map((label) => (
-                  <Link key={label} to={`/${label}`} className="text-black hover:opacity-75">
+                {navLinks.map(({ path, label }) => (
+                  <Link key={label} to={path} className="text-black hover:opacity-75">
                     {translations[language]?.[label] || label}
                   </Link>
                 ))}
@@ -141,13 +120,11 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile Sticky Language Button in Center */}
-      <div className="md:hidden fixed bottom-2 left-1/2 transform -translate-x-1/2 z-50">
-        <button
-          onClick={toggleLanguage}
-          className="button"
-        >
+      <div className="md:hidden fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50">
+        <button onClick={toggleLanguage} className="button">
           {translations[language]?.toggleLanguage || "Change Language"}
         </button>
       </div>
     </>
-  )}
+  );
+}

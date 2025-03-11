@@ -43,7 +43,7 @@ export default function ChatWhatsApp() {
         <motion.img
           src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
           alt="WhatsApp Logo"
-          className="w-10 h-10 md:w-6 md:h-6"
+          className="w-5 h-5 md:w-6 md:h-6"
           animate={{ scale: [1, 1.2, 1], opacity: [1, 0.8, 1] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         />

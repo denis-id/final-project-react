@@ -4,10 +4,10 @@ import { Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 import '../styles/SubmitButton.css';
 import globalBackground from '../assets/images/globalBackground.gif';
 import kohiMenu from "../assets/images/kohiMenu.png";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {form, setForm, login} = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
@@ -34,7 +34,7 @@ export default function Login() {
           <p className="mt-2 text-gray-600">Sign in to <strong className="text-brown-700">𝐊𝐨𝐡𝐢 𝐂offeé ☕︎</strong> account</p>
         </div>
         <br />
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={login} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
             <div className="mt-1 relative">
@@ -44,8 +44,8 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={(e) => setForm({...form, email:e.target.value})}
                 className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                 placeholder="Enter your email"
               />
@@ -62,8 +62,8 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={(e) => setForm({...form,password:e.target.value})}
                 className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                 placeholder="Enter your password"
               />

@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useMemo } from "react";
-import { menu } from "../data/menu";
 import { useLanguage } from "../context/LanguageContext";
+import { useMenuContext } from "./MenuContext";
 
 const FilterContext = createContext();
 
-export function FilterProvider({ children }) {
+export function FilterProvider({ children, initialMenu = [] }) {
+const {menus, category} = useMenuContext()
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
   const { language, translations } = useLanguage(); 
@@ -15,16 +16,16 @@ export function FilterProvider({ children }) {
   const menuPerPage = 6;
 
   const categories = useMemo(
-    () => [translations[language]?.filterAll || "All", ...new Set(menu.map((p) => p.category))],
-    [language, translations]
+    () => [translations[language]?.filterAll || "All", ...new Set(category.map((p) => p.name))],
+    [language, translations, menus]
   );
 
   const filteredAndSortedMenu = useMemo(() => {
-    let result = [...menu];
+    let result = [...menus];
 
-    // Category filter
+     // Category filter
     if (selectedCategory !== translations[language]?.filterAll && selectedCategory !== "All") {
-      result = result.filter((p) => p.category === selectedCategory);
+      result = result.filter((p) => p.category_name === selectedCategory);
     }
     
     // Search filter
@@ -64,12 +65,10 @@ export function FilterProvider({ children }) {
     }
 
     return result;
-  }, [menu, selectedCategory, sortBy, searchQuery, priceRange, translations, language]);
+  }, [menus, selectedCategory, sortBy, searchQuery, priceRange, translations, language]);
 
   // Pagination
-  const totalPages = Math.ceil(
-    filteredAndSortedMenu.length / menuPerPage
-  );
+  const totalPages = Math.ceil(filteredAndSortedMenu.length / menuPerPage);
   const paginatedMenu = filteredAndSortedMenu.slice(
     (currentPage - 1) * menuPerPage,
     currentPage * menuPerPage

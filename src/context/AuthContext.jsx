@@ -11,17 +11,14 @@ export const AuthProvider = ({ children }) => {
   const navigation = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.path || "/";
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({email: "", password: ""});
 
   const login = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.API_URL}/api/auth/customer/sign-in`,
-        JSON.stringify(form), // Send dataUser as JSON
+        `${process.env.REACT_APP_API_URL}/api/login/`,
+        JSON.stringify(form), 
         {
           headers: {
             "Content-Type": "application/json",

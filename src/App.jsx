@@ -20,6 +20,8 @@ import { useState, useEffect } from "react";
 import { ArticleProvider } from "./context/ArticleContext";
 import { OrderProvider } from "./context/OrderContext";
 import WelcomeAnnouncer from "./components/WelcomeAnnouncer";
+import { MenuProvider } from "./context/MenuContext";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const [showAnnouncer, setShowAnnouncer] = useState(true);
@@ -44,10 +46,12 @@ function App() {
         <WelcomeAnnouncer onContinue={handleContinue} />
       ) : (
         <Router>
+          <AuthProvider>
           <LanguageProvider>
             <CartProvider>
               <ArticleProvider>
                 <OrderProvider>
+                  <MenuProvider>
                   <FilterProvider>
                     <div className="min-h-screen flex flex-col" style={{backgroundColor:'#EFE8D9'}}>
                       <main className="flex-grow">
@@ -70,10 +74,12 @@ function App() {
                       </main>
                     </div>
                   </FilterProvider>
+                  </MenuProvider>
                 </OrderProvider>
               </ArticleProvider>
             </CartProvider>
           </LanguageProvider>
+          </AuthProvider>
         </Router>
       )}
     </div>

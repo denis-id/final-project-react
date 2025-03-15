@@ -1,6 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { menu } from "../data/menu";
 import { Plus, Minus, ArrowLeft } from "lucide-react";
 import { useCart } from "react-use-cart";
 import { formatPrice } from "../utils/helper";
@@ -9,23 +8,25 @@ import ChatWhatsApp from "../components/ChatWhatsApp";
 import BackToTop from "../components/BackToTop";
 import { notification } from "antd";
 import { useLanguage } from "../context/LanguageContext"; 
+import { useMenuContext } from "../context/MenuContext";
 
 export default function MenuDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem, items, updateItemQuantity } = useCart();
   const { language, translations } = useLanguage(); 
-
+const { menu, getMenuById } = useMenuContext();
   const [quantity, setQuantity] = useState(1);
   const t = translations[language]; // Extract translations for cleaner code
 
-  // Memoized menu item lookup
-  const menuItem = useMemo(() => menu.find((p) => p.id === parseInt(id)), [id]);
-
   // Memoized check for existing item in the cart
-  const existingItem = useMemo(() => items.find((item) => item.id === menuItem?.id), [items, menuItem]);
-
-  if (!menuItem) {
+  const existingItem = useMemo(() => items.find((item) => item.id === menu?.id), [items, menu]);
+  useEffect (() => {
+    if (id) {
+      getMenuById (id);
+      }
+    }, [id]);
+  if (!menu) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">{t?.menuNotFound}</h2>
@@ -45,17 +46,17 @@ export default function MenuDetail() {
     const quantityNumber = Number(quantity);
 
     if (existingItem) {
-      updateItemQuantity(menuItem.id, existingItem.quantity + quantityNumber);
+      updateItemQuantity(menu.id, existingItem.quantity + quantityNumber);
       notification.success({
-        message: `Updated ${menuItem.name} in cart`,
-        description: `${menuItem.name} quantity updated.`,
+        message: `Updated ${menu.name} in cart`,
+        description: `${menu.name} quantity updated.`,
         placement: "top",
       });
     } else {
-      addItem({ ...menuItem, price: menuItem.price }, quantityNumber);
+      addItem({ ...menu, price: menu.price }, quantityNumber);
       notification.success({
-        message: `Added ${menuItem.name} to cart`,
-        description: `${menuItem.name} added to your cart.`,
+        message: `Added ${menu.name} to cart`,
+        description: `${menu.name} added to your cart.`,
         placement: "top",
         style: { zIndex: 999 },
       });
@@ -64,12 +65,13 @@ export default function MenuDetail() {
     setQuantity(1);
   };
 
+
   return (
     <div className="bg-white">
       <ChatWhatsApp />
       <BackToTop />
 
-      {menuItem.image && <Hero title={t?.coverMenuDetailTitle}description={t?.menuDetailDesc} image={menuItem.image} />}
+      {menu.image && <Hero title={t?.coverMenuDetailTitle}description={t?.menuDetailDesc} image={menu.image} />}
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         <button
@@ -83,18 +85,18 @@ export default function MenuDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Menu Image */}
           <div className="aspect-square overflow-hidden rounded-lg">
-            <img src={menuItem.image} alt={menuItem.name} className="w-full h-full object-cover" />
+            <img src={menu.image} alt={menu.name} className="w-full h-full object-cover" />
           </div>
 
           {/* Menu Details */}
           <div>
-            <h1 className="text-3xl font-bold mb-4">{menuItem.name}</h1>
-            <p className="text-2xl text-gray-800 mb-6">{formatPrice(menuItem.price)}</p>
+            <h1 className="text-3xl font-bold mb-4">{menu.name}</h1>
+            <p className="text-2xl text-gray-800 mb-6">{formatPrice(menu.price)}</p>
 
             <div className="mb-6">
               <h2 className="font-semibold mb-2">{t?.menuDetailTitle}:</h2>
               <p className="text-gray-600">
-                {t?.menu?.find((item) => item.id === menuItem.id)?.description || "No description available"}
+                {menu.description || "No description available"}
               </p>
             </div>
 

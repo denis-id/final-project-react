@@ -10,7 +10,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { items } = useCart();
   const { language, translations, toggleLanguage } = useLanguage();
-
+  const user = JSON.parse(localStorage.getItem('user'));
+  console.log('user', user);
   const totalItems = items?.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {

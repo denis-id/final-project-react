@@ -63,14 +63,24 @@ export default function Cart() {
             {items.map((item) => (
               <div key={item.id} className="flex items-center gap-4 border-b py-4">
                 <img
-                  src={item.image}
+                  src={item.images}
                   alt={item.name}
                   className="w-24 h-24 object-cover rounded"
                 />
                 <div className="flex-1">
                   <h3 className="font-semibold">{item.name}</h3>
                   <p className="text-gray-600">{formatPrice(item.price)}</p>
-                </div>
+                  {item.variants && item.variants.length > 0 && (
+                    <div className="mt-2">
+                      {item.variants.map((variant) => (
+                        <div key={variant.id} className="text-sm text-gray-500">
+                          <span>{translations[language]?.selectSize}: {variant.size}</span>
+                          <p>in stock: {variant.stock}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() =>

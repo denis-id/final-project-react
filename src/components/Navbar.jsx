@@ -4,15 +4,30 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "react-use-cart";
 import kohiMenu from "../assets/images/kohiMenu.png";
 import { useLanguage } from "../context/LanguageContext";
+import { Modal } from "antd";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { items } = useCart();
   const { language, translations, toggleLanguage } = useLanguage();
-  const user = JSON.parse(localStorage.getItem('user'));
-  console.log('user', user);
+  const { user, logout } = useAuth(); // Ambil user dan logout dari AuthContext
+
   const totalItems = items?.reduce((sum, item) => sum + item.quantity, 0);
+
+  const confirmLogout = () => {
+    Modal.confirm({
+      title: "Logout Confirmation",
+      content: "Are you sure you want to logout?",
+      okText: "Yes, Logout",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk() {
+        logout(); 
+      },
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -25,7 +40,6 @@ export default function Navbar() {
     { path: "/menu", label: "navbarMenu" },
     { path: "/contact", label: "contact" },
     { path: "/articles", label: "navbarArticles" },
-    { path: "/login", label: "login" }
   ];
 
   return (
@@ -67,6 +81,28 @@ export default function Navbar() {
                   {translations[language]?.[label] || label}
                 </Link>
               ))}
+
+              {/* Tampilkan Login atau Logout */}
+              {user ? (
+                <button
+                  onClick={confirmLogout}
+                  className={`hover:opacity-75 transition-colors ${
+                    isScrolled ? "text-black hover:text-red-700" : "text-white hover:text-red-300"
+                  }`}
+                >
+                  𝙇𝙤𝙜𝙤𝙪𝙩
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className={`hover:opacity-75 transition-colors ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  𝑳𝒐𝒈𝒊𝒏
+                </Link>
+              )}
+
               <Link to="/cart" className="relative">
                 <ShoppingCart
                   className={`w-6 h-6 transition-colors ${
@@ -108,12 +144,27 @@ export default function Navbar() {
                     {translations[language]?.[label] || label}
                   </Link>
                 ))}
-                <Link to="/cart" className="flex items-center text-black hover:opacity-75">
+                
+                 <Link to="/cart" className="flex items-center text-black hover:opacity-75">
                   <ShoppingCart className="w-6 h-6 mr-2" />
                   <span>
                     {translations[language]?.cart || "Cart"} ({totalItems})
                   </span>
                 </Link>
+
+                {/* Tampilkan Login atau Logout di Mobile */}
+                {user ? (
+                  <button
+                  onClick={confirmLogout}
+                    className="text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    𝙇𝙤𝙜𝙤𝙪𝙩
+                  </button>
+                ) : (
+                  <Link to="/login" className="text-black hover:opacity-75">
+                     𝑳𝒐𝒈𝒊𝒏
+                  </Link>
+                )}
               </div>
             </div>
           )}

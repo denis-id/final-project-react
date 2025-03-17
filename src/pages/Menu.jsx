@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import Hero from "../components/Hero";
 import BackToTop from "../components/BackToTop";
 import ChatWhatsApp from "../components/ChatWhatsApp";
+import "../styles/loader.css";
 import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, Grid, List } from "lucide-react";
 
 // Komponen FilterSidebar untuk Desktop
@@ -23,12 +24,15 @@ const FilterSidebar = ({
   setSortBy,
   clearFilters,
   setCurrentPage,
+  isLoadingCategories,
 }) => {
 
   const { language, translations } = useLanguage();
 
   return (
     <div className="w-64 space-y-6">
+
+      {/* Search Input */}
       <div className="relative flex-1 md:w-64">
         <input
           type="text"
@@ -42,12 +46,18 @@ const FilterSidebar = ({
         />
         <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
       </div>
+
+        {/* Filter Kategori */}
       <div> 
         <h3 className="font-semibold mb-3">
         {translations[language].menuCategories}
           </h3>
         <div className="space-y-2">
-          {categories.map((category) => (
+        {isLoadingCategories
+            ? [...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton-loader h-8 w-full rounded-md"></div>
+            ))
+          : categories.map((category) => (
             <button
               key={category}
               onClick={() => {
@@ -65,6 +75,7 @@ const FilterSidebar = ({
           ))}
         </div>
       </div>
+      {/*Filter Price Range */}
       <div>
         <h3 className="font-semibold mb-3">
         {translations[language].priceRange}
@@ -143,6 +154,7 @@ const FilterModal = ({
   setSortBy,
   clearFilters,
   setCurrentPage,
+  isLoadingCategories,
 }) => {
 
   const { language, translations } = useLanguage();
@@ -191,6 +203,8 @@ export default function Menu() {
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem("favorites")) || []);
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   
   const {
     selectedCategory,
@@ -210,6 +224,18 @@ export default function Menu() {
     viewMode,
     setViewMode,
   } = useFilter();
+
+   // Simulasi Loading Data
+   useEffect(() => {
+    setIsLoading(true);
+    setIsLoadingCategories(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      setIsLoadingCategories(false);
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  }, [paginatedMenu]);
 
   // Menutup modal saat lebar layar diubah ke desktop
   useEffect(() => {
@@ -318,127 +344,47 @@ const toggleFavorite = (id) => {
               setSortBy={setSortBy}
               clearFilters={clearFilters}
               setCurrentPage={setCurrentPage}
+              isLoadingCategories={isLoadingCategories}
             />
           )}
 
-          {/* Menu Grid and Pagination */}
+          {/* Daftar Menu */}
           <div className="flex-1">
-            {paginatedMenu.length === 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="loader-card">
+                   <div class="coffee-spill"></div>
+                </div>
+              ))}
+            </div>
+            ) : !isLoading && paginatedMenu.length === 0 ? (
               <div className="text-center py-12">
-                <Frown className="" 
-                 /> 
-                <p className="text-xl text-black-600">           
-                {translations[language].menuNotFoundDesc}
-                </p>
-                <button
-                  onClick={clearFilters}
-                  className="mt-4 text-xl text-red-500 hover:underline"
-                  aria-label="Clear all filters"
-                >
+                <Frown className="w-10 h-10 mx-auto text-gray-400" />
+                <p className="text-xl text-gray-600">{translations[language].menuNotFoundDesc}</p>
+                <button onClick={clearFilters} className="mt-4 text-red-500 hover:underline">
                   {translations[language].menuClearFilters}
                 </button>
               </div>
             ) : (
-              <>
-              <div
-  className={
-    viewMode === "grid"
-      ? "grid grid-cols-1 md:grid-cols-3 gap-8"
-      : "flex flex-col md:flex-col gap-8"
-  }
->
-  {paginatedMenu
-    .sort((a, b) => b.bought - a.bought) // Sort by most bought
-    .map((menu) => (
-      <motion.div
-        key={menu.id}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <MenuCard key={menu.id} menu={menu} viewMode={viewMode}>
-          {/* Rating Stars */}
-          <div className="flex items-center mt-2">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <span key={index} className={`text-lg ${index < menu.rating ? "text-yellow-500" : "text-gray-300"}`}>
-                ★
-              </span>
-            ))}
-            <span className="ml-2 text-sm text-gray-500">({menu.rating})</span>
-          </div>
-
-          {/* Most Popular Badge */}
-          {menu.bought > 50 && ( 
-            <span className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 text-sm rounded-md">
-              Popular
-            </span>
-          )}
-
-          {/* Favorite & Cart Buttons */}
-          <div className="flex justify-between items-center mt-2">
-            <button onClick={() => toggleFavorite(menu.id)}>
-              <Heart
-                className={`w-5 h-5 transition-colors duration-300 ${
-                  favorites.includes(menu.id) ? "text-red-500 fill-current" : "text-gray-400"
-                }`}
-              />
-            </button>
-            <button className="p-2 bg-black text-white rounded-md">
-              <ShoppingCart className="w-5 h-5" />
-            </button>
-          </div>
-            </MenuCard>
+              <motion.div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-3 gap-8"
+                  : "flex flex-col gap-8"
+              }
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {paginatedMenu.map((menu) => (
+                <MenuCard key={menu.id} menu={menu} viewMode={viewMode} />
+              ))}
             </motion.div>
-          ))}
-          </div>             
-          
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="mt-12 flex justify-center items-center gap-4">
-                    <button
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
-                      disabled={currentPage === 1}
-                      className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label="Previous page"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-
-                    <div className="flex gap-2">
-                      {[...Array(totalPages)].map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentPage(index + 1)}
-                          className={`w-8 h-8 rounded-full ${
-                            currentPage === index + 1
-                              ? "bg-black text-white"
-                              : "hover:bg-gray-100"
-                          }`}
-                          aria-label={`Go to page ${index + 1}`}
-                        >
-                          {index + 1}
-                        </button>
-                      ))}
-                    </div>
-                    <button
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                      className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label="Next page"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }

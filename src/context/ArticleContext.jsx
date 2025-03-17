@@ -12,44 +12,52 @@ export const ArticleProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = process.env.API_URL || "http://localhost:5000"; 
-
-  // Fetch all articles
-  const fetchArticles = async () => {
+  // get all articles
+  const getArticle = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_URL}/api/article`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/articles`);
       setArticles(response.data);
     } catch (err) {
-      console.error("Error fetching articles:", err);
-      setError(err.message);
+      console.error("Error geting articles:", err);
+      setError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch a single article by ID
-  const fetchArticleById = async (id) => {
+  // get a single article by ID
+  const getArticleById = async (id) => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await axios.get(`${API_URL}/api/article/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/articles/${id}`);
       setArticle(response.data);
     } catch (err) {
-      console.error("Error fetching article:", err);
-      setError(err.message);
+      console.error("Error geting article:", err);
+      setError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch articles on mount
+  // get articles on mount
   useEffect(() => {
-    fetchArticles();
+    getArticle();
   }, []);
 
   return (
     <ArticleContext.Provider
-      value={{ articles, article, loading, error, fetchArticles, fetchArticleById, translations, language }}
+      value={{ 
+        articles, 
+        article, 
+        loading, 
+        error, 
+        getArticle, 
+        getArticleById, 
+        translations, 
+        language 
+      }}
     >
       {children}
     </ArticleContext.Provider>

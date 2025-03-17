@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -8,17 +8,26 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigation = useNavigate();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.path || "/";
-  const [form, setForm] = useState({email: "", password: ""});
+
+  // Ambil user dari localStorage saat pertama kali load
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const login = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/login/`,
-        JSON.stringify(form), 
+        JSON.stringify(form),
         {
           headers: {
             "Content-Type": "application/json",
@@ -27,14 +36,38 @@ export const AuthProvider = ({ children }) => {
       );
 
       const data = response.data;
-
-      navigation(redirectPath, { replace: true });
+      setUser(data);
       localStorage.setItem("user", JSON.stringify(data));
-      navigation(-1);
-      setUser(user);
-    } catch (error) {
-      console.error(error);
-      setError(error);
+      navigate(redirectPath, { replace: true });
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/register/`,
+        JSON.stringify(form),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate(redirectPath, { replace: true });
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -43,26 +76,14 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    navigation(-1);
-  };
-
-  const register = async () => {
-    try {
-      // Register logic here
-    } catch (err) {
-      console.log(err);
-    }
+    navigate("/login", { replace: true });
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, error, login, logout, form, setForm }}
-    >
+    <AuthContext.Provider value={{ user, loading, error, login, register, logout, form, setForm }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

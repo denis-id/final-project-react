@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { useMenuContext } from "./MenuContext";
 
 const FilterContext = createContext();
 
-export function FilterProvider({ children, initialMenu = [] }) {
+export function FilterProvider({ children }) {
 const {menus, category} = useMenuContext()
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
@@ -12,21 +12,25 @@ const {menus, category} = useMenuContext()
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState("grid"); 
+  const [isLoading, setIsLoading] = useState(false);
   const menuPerPage = 6;
 
-  const categories = useMemo(
-    () => [translations[language]?.filterAll || "All", ...new Set(category.map((p) => p.name))],
+  const categories = useMemo(() => 
+    [translations[language]?.filterAll || "All", ...new Set(category.map((p) => p.name))],
     [language, translations, menus]
   );
 
-  const filteredAndSortedMenu = useMemo(() => {
-    let result = [...menus];
+  const [filteredAndSortedMenu, setFilteredAndSortedMenu] = useState([]);
 
-     // Category filter
-    if (selectedCategory !== translations[language]?.filterAll && selectedCategory !== "All") {
-      result = result.filter((p) => p.category_name === selectedCategory);
-    }
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      let result = [...menus];
+
+      if (selectedCategory !== translations[language]?.filterAll && selectedCategory !== "All") {
+        result = result.filter((p) => p.category_name === selectedCategory);
+      }
     
     // Search filter
     if (searchQuery) {
@@ -63,8 +67,11 @@ const {menus, category} = useMenuContext()
       default:
         break;
     }
+    setFilteredAndSortedMenu(result);
+    setIsLoading(false);
+    }, 500); 
 
-    return result;
+    return () => clearTimeout(timer);
   }, [menus, selectedCategory, sortBy, searchQuery, priceRange, translations, language]);
 
   // Pagination
@@ -103,6 +110,7 @@ const {menus, category} = useMenuContext()
         menuPerPage,
         viewMode,
         setViewMode,
+        isLoading,
       }}
     >
       {children}

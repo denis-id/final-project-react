@@ -1,16 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, ArrowLeft } from "lucide-react";
 import '../styles/SubmitButton.css';
 import globalBackground from '../assets/images/globalBackground.gif';
 import kohiMenu from "../assets/images/kohiMenu.png";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const {form, setForm, login} = useAuth();
-  const handleSubmit = (e) => {
+  const { form, setForm, login, user } = useAuth(); // Ambil user dari useAuth
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+    setLoading(true);
+    await login(); // Panggil login dari context
+    setLoading(false);
+    setSuccess(true);
+    setTimeout(() => {
+      setSuccess(false);
+    }, 3000); // Jeda 3 detik setelah menampilkan sukses
   };
 
   return (
@@ -29,71 +38,89 @@ export default function Login() {
           alt="brand logo"
           className="w-12 h-12 rounded-full object-cover absolute top-4 right-4"
         />
-        <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="mt-2 text-gray-600">Sign in to <strong className="text-brown-700">𝐊𝐨𝐡𝐢 𝐂offeé ☕︎</strong> account</p>
-        </div>
-        <br />
-        <form onSubmit={login} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
-            <div className="mt-1 relative">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({...form, email:e.target.value})}
-                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Enter your email"
-              />
-              <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+
+        {success && user ? (
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Login Success, welcome {user.name}</h2>
+          </div>
+        ) : (
+          <>
+            <div className="text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h2>
+              <p className="mt-2 text-gray-600">Sign in to <strong className="text-brown-700">𝐊𝐨𝐡𝐢 𝐂offeé ☕︎</strong> account</p>
             </div>
-          </div>
+            <br />
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+                <div className="mt-1 relative">
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                    placeholder="Enter your full name"
+                  />
+                  <User className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                </div>
+              </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-            <div className="mt-1 relative">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={form.password}
-                onChange={(e) => setForm({...form,password:e.target.value})}
-                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Enter your password"
-              />
-              <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-            </div>
-          </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
+                <div className="mt-1 relative">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                    placeholder="Enter your email"
+                  />
+                  <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                </div>
+              </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center">
-              <input id="remember-me" type="checkbox" className="h-4 w-4 text-black border-gray-300 rounded" />
-              <span className="ml-2 text-gray-700">Remember me</span>
-            </label>
-            <a href="#" className="text-black hover:underline">Forgot your password?</a>
-          </div>
-          
-          <button
-            type="submit"
-            className="w-full flex justify-center py-3 px-4 rounded-lg text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
-          >
-            Sign in
-          </button>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                <div className="mt-1 relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                    placeholder="Enter your password"
+                  />
+                  <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                </div>
+              </div>
 
-          <div className="text-center text-sm">
-            <span className="text-gray-600">Don't have an account?</span>
-            <Link to="/register" className="font-medium text-black hover:underline inline-flex items-center">
-              Sign up
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
-          </div>
-        </form>
+              <button
+                type="submit"
+                className="w-full flex justify-center py-3 px-4 rounded-lg text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Sign in"}
+              </button>
+              <div className="text-center text-sm">
+                <span className="text-gray-600">Don't have an account?</span>
+                <Link to="/register" className="font-medium text-black hover:underline inline-flex items-center">
+                  Sign up
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

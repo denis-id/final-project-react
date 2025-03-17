@@ -50,7 +50,18 @@ export const MenuProvider = ({ children }) => {
   }, []);
 console.log('Menu',category);
   return (
-    <MenuContext.Provider value={{loading, menu, menus, getMenuById, category, getAllCategory}}>{children}</MenuContext.Provider>
+    <MenuContext.Provider 
+      value={{
+        loading, 
+        menu, 
+        menus, 
+        getMenuById, 
+        category, 
+        getAllCategory
+      }}
+    >
+      {children}
+    </MenuContext.Provider>
   );
 };
 // make sure use

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Frown, Heart, ShoppingCart, Sun, Moon } from 'lucide-react';
+import { Frown } from 'lucide-react';
 import { useLanguage } from "../context/LanguageContext";
 import kohiMenu from "../assets/images/kohiMenu.png";
 import MenuCard from "../components/MenuCard";
@@ -9,7 +9,7 @@ import Hero from "../components/Hero";
 import BackToTop from "../components/BackToTop";
 import ChatWhatsApp from "../components/ChatWhatsApp";
 import "../styles/loader.css";
-import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, Grid, List } from "lucide-react";
+import { Search, SlidersHorizontal, X, Grid, List } from "lucide-react";
 
 // Komponen FilterSidebar untuk Desktop
 const FilterSidebar = ({
@@ -260,7 +260,7 @@ const toggleFavorite = (id) => {
       <ChatWhatsApp />
       <BackToTop />
       <Hero  
-        title="KOHI Coffeé Menu"
+        title="Menu"
         description={translations[language].knowCoffee}
         />
       <div className="max-w-7xl mx-auto px-4 py-16">

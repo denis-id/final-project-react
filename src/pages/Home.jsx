@@ -1,17 +1,16 @@
 import { motion } from "framer-motion";
 import '../styles/Button.css';
 import HeroIndex from "../components/home/HeroIndex";
-// import Catalog from "./Catalog"; 
 import BackToTop from "../components/BackToTop";
 import Services from "../components/Services";
-import HeroCarousel from "../components/HeroCarousel";
 import ChatWhatsApp from "../components/ChatWhatsApp";
 import CoffeeSection from "../components/CoffeeSection";
 import SideImage from '../assets/images/coffee5.gif';
-import Discover from "./Discover";
 import Layouts from "../components/Layouts";
 import Features from "../components/home/Features";
 import SignatureMenu from "../components/SignatureMenu";
+import Carousel from "./Carousel";
+import Testimonial from "./Testimonial";
 
 // Animation Variants
 const fadeIn = {
@@ -25,57 +24,56 @@ const staggerContainer = {
   animate: { transition: { staggerChildren: 0.3 } },
 };
 
-
 export default function Home() {
-  
   return (
-    <div>
+    <motion.div initial="initial" animate="animate" variants={staggerContainer}>
       <ChatWhatsApp />
       <BackToTop />
-      <HeroIndex />
-      <div className="relative w-full max-w-3xl mx-auto overflow-hidden" 
-    >
-      <motion.div
-        className="flex"
-        transition={{ type: "spring", stiffness: 200, damping: 30 }}
-      >      
+      <motion.div variants={fadeIn}>
+        <HeroIndex />
+      </motion.div>
+      
+      <motion.div className="relative w-full max-w-3xl mx-auto overflow-hidden" variants={fadeIn}>
+        <motion.div className="flex" transition={{ type: "spring", stiffness: 200, damping: 30 }}>
           <div className="min-w-full">
             <img src={SideImage} alt="" className="w-full rounded-xl shadow-lg" />
-          </div>          
+          </div>
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* signatureMenu */}
-      <SignatureMenu />
+      <motion.div variants={fadeIn}>
+        <SignatureMenu />
+      </motion.div>
 
-      {/* carousel */}
-      <HeroCarousel />
+      <motion.div variants={fadeIn}>
+        <Carousel />
+      </motion.div>
 
-      {/* coffeeSection */}
-      <motion.div
-        className="flex justify-center my-10"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-      <h2 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-yellow-800 drop-shadow-lg text-center">
-      𝑲𝑶𝑯𝑰 𝑪𝒐𝒇𝒇𝒆é 幸</h2>
-      </motion.div>   
-
-      <CoffeeSection />
+      <motion.div className="flex justify-center my-10" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
+        <h2 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-yellow-800 drop-shadow-lg text-center">
+          𝑲𝑶𝑯𝑰 𝑪𝒐𝒇𝒇𝒆é 幸
+        </h2>
+      </motion.div>
       
-      {/* woman cover */}
-      <Layouts />
-
-      {/* services */}
-      <Services />
-
-       {/* Features Section */}
-       <Features staggerContainer={staggerContainer} fadeIn={fadeIn} />
-
-       {/* discoverImage */}
-       <Discover />
+      <motion.div variants={fadeIn}>
+        <CoffeeSection />
+      </motion.div>
       
-    </div>
+      <motion.div variants={fadeIn}>
+        <Layouts />
+      </motion.div>
+      
+      <motion.div variants={fadeIn}>
+        <Services />
+      </motion.div>
+      
+      <motion.div variants={fadeIn}>
+        <Features />
+      </motion.div>
+      
+      <motion.div variants={fadeIn}>
+        <Testimonial />
+      </motion.div>
+    </motion.div>
   );
 }

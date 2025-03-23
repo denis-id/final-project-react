@@ -20,7 +20,7 @@ const WelcomeAnnouncer = ({ onContinue }) => {
     }, [onContinue]);
   
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-[#3E2723]">
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-[#3E2723] drop-shadow-2xl">
       {/* Coffee steam animation */}
       {[...Array(5)].map((_, i) => (
         <motion.div
@@ -53,10 +53,11 @@ const WelcomeAnnouncer = ({ onContinue }) => {
           alt="Logo" 
           className="w-20 h-20 mx-auto mb-4 animate-bounce"
         />
-        <h1 className="text-2xl font-bold mb-4 text-white">Welcome to Kohi Coffeé 幸</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-center bg-gradient-to-r from-white to-red-800 text-transparent bg-clip-text animate-pulse drop-shadow-2xl">Welcome to Kohi Coffeé 幸</h1>
+        <br />
         <button
           onClick={onContinue}
-          className="bg-brown-500 font-bold text-white px-6 py-2 rounded-2xl shadow-lg transition transform hover:bg-orange-900 hover:scale-105 hover:shadow-2xl"
+          className="bg-brown-500 font-bold text-white px-6 py-2 rounded-2xl shadow-lg transition transform hover:bg-orange-900 hover:scale-105 hover:drop-shadow-2xl"
         >
           {isMobile ? 'Tap anywhere to continue' : 'Press any key to continue'}
         </button>

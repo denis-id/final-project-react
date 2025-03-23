@@ -53,7 +53,7 @@ const HeroIndex = () => {
           className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4"
         >
           <Typewriter
-            words={["KOHI Coffeé & Cakes"]}
+            words={["KOHI Coffeé 幸"]}
             loop={false}
             cursor
             cursorStyle="_"

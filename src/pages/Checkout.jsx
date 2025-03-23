@@ -21,13 +21,17 @@ export default function Checkout() {
   
   // Form Data State
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
     address: "",
     address_description: "",
     city: "",
     country: "",
-    products: []
+    postalCode: "",
+    saveInfo: false,
+    products: [],
   });
 
   const handleChange = (e) => {
@@ -40,46 +44,58 @@ export default function Checkout() {
 
   const handleCheckout = async (orderData) => {
     try {
-      const response = await createOrder(orderData);
-      // if (response.status === 200 || response.status === 201) {
-      //   Swal.fire({
-      //     icon: "success",
-      //     title: "Pesanan Berhasil!",
-      //     text: "Pesanan Anda telah dibuat.",
-      //     confirmButtonColor: "#3085d6",
-      // }).then(() => {
-      //   emptyCart(); 
-      //   navigate("/order-success"); 
-      // });
-      // }
+        setIsProcessing(true); 
+
+        const response = await createOrder(orderData);
+
+        if (!response || !response.status) {
+            throw new Error("Respon tidak valid dari server.");
+        }
+
+        if (response.status === 200 || response.status === 201) {
+            await Swal.fire({
+                icon: "success",
+                title: "Pesanan Berhasil!",
+                text: "Pesanan Anda telah dibuat.",
+                confirmButtonColor: "#3085d6",
+            });
+
+            emptyCart();
+            navigate("/orders");
+        } else {
+            throw new Error("Gagal membuat pesanan. Silakan coba lagi.");
+        }
     } catch (error) {
-      console.error("Error saat checkout:", error);
-      if (error.response) {
-        console.error("Response Error:", error.response);
-        Swal.fire({
-            icon: "error",
-            title: "Checkout Gagal",
-            text: error.response.data.message || "Terjadi kesalahan saat checkout.",
-            confirmButtonColor: "#d33",
-        });
-      } else if (error.request) {
-        console.error("No Response Received:", error.request);
-        Swal.fire({
-            icon: "warning",
-            title: "Server Tidak Merespons",
-            text: "Server tidak memberikan respons. Coba lagi nanti.",
-            confirmButtonColor: "#d33",
-        });
-      } else {
-        Swal.fire({
-            icon: "error",
-            title: "Gagal Menghubungi Server",
-            text: "Coba lagi nanti.",
-            confirmButtonColor: "#d33",
-        });
-      }
+        console.error("Error saat checkout:", error);
+
+        if (error.response) {
+            console.error("Response Error:", error.response);
+            Swal.fire({
+                icon: "error",
+                title: "Checkout Gagal",
+                text: error.response.data?.message || "Terjadi kesalahan saat checkout.",
+                confirmButtonColor: "#d33",
+            });
+        } else if (error.request) {
+            console.error("No Response Received:", error.request);
+            Swal.fire({
+                icon: "warning",
+                title: "Server Tidak Merespons",
+                text: "Server tidak memberikan respons. Coba lagi nanti.",
+                confirmButtonColor: "#d33",
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Gagal Menghubungi Server",
+                text: error.message || "Coba lagi nanti.",
+                confirmButtonColor: "#d33",
+            });
+        }
+    } finally {
+        setIsProcessing(false); 
     }
-  };
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,12 +117,10 @@ export default function Checkout() {
       shipping_cost: shipping,
       total_price: grandTotal,
       products: items.map((item) => ({
-        product_id: item.id,
-        name: item.name,
+        product_variant_id: item.variant_id, 
         quantity: item.quantity,
         price: item.price,
         subtotal: item.price * item.quantity,
-        product_variant_id: item.variant_id
       })),
     };
 
@@ -142,7 +156,15 @@ export default function Checkout() {
     );
   }
 
-  const isFormValid = formData.firstName && formData.lastName && formData.email && formData.phone;
+  const isFormValid =
+  formData.firstName &&
+  formData.lastName &&
+  formData.email &&
+  formData.phone &&
+  formData.address &&
+  formData.city &&
+  formData.country &&
+  formData.postalCode;
 
   return (
     <div>
@@ -299,11 +321,10 @@ export default function Checkout() {
                     className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
                   >
                     <option value="">{translations[language]?.checkoutSelectCountry}:</option>
-                    <option value="US">Japan</option>
-                    <option value="CA">Indonesia</option>
-                    <option value="GB">Singapore</option>
-                    <option value="AU">Malaysia</option>
-                    {/* Add more countries as needed */}
+                    <option value="JP">Japan</option>
+                    <option value="ID">Indonesia</option>
+                    <option value="SG">Singapore</option>
+                    <option value="MY">Malaysia</option>
                   </select>
                 </div>
 
@@ -322,13 +343,6 @@ export default function Checkout() {
                   </label>
                 </div>
               </div>
-              <button
-                type="submit"
-                className={`w-full py-4 rounded-lg mt-6 ${isFormValid ? 'bg-black text-white' : 'bg-gray-400 text-gray-600'} flex items-center justify-center gap-2`}
-                disabled={!isFormValid || isProcessing}
-              >
-                {isProcessing ? "Processing..." : `${translations[language]?.placeOrder} 🚀`}
-              </button>
             </form>
           </div>
 
@@ -350,10 +364,9 @@ export default function Checkout() {
                   </div>
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-red-600 font-bold">{formatPrice(item.price)}</p>
                       {/* Tampilkan variant size */}
                       {item.variants?.length > 0 && (
-                         <span className="text-orange-900 font-medium">{translations[language]?.selectSize}: {item.variants[0].size}</span>
+                         <span className="text-gray-600">{translations[language]?.selectSize}: {item.variants[0].size}</span>
                       )}
                     </div>
                   <div className="text-right">
@@ -378,6 +391,16 @@ export default function Checkout() {
                   <span>{formatPrice(grandTotal)}</span>
                 </div>
               </div>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className={`w-full py-4 rounded-lg mt-6 ${
+                  isFormValid ? 'bg-black text-white' : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                } flex items-center justify-center gap-2`}
+                disabled={!isFormValid || isProcessing}
+              >
+                {isProcessing ? "Processing..." : `${translations[language]?.placeOrder} 🚀`}
+              </button>
             </div>
           </div>
         </div>

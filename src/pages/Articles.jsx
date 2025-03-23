@@ -14,7 +14,6 @@ export default function Articles() {
   const featuredArticle = articles.find((article) => article.is_featured === true);
   const regularArticles = articles.filter((article) => !article.featured);
 
-  // get articles if they haven't been loaded yet
   useEffect(() => {
     if (articles.length === 0) {
       getArticle();
@@ -29,6 +28,24 @@ export default function Articles() {
     <div className={`animate-pulse bg-gray-300 h-4 ${width} rounded-md my-2`} />
   );
 
+  const DateInfo = ({ date }) => (
+    <div className="flex items-center gap-2">
+      <Calendar className="w-4 h-4" />
+      {new Date(date).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}
+    </div>
+  );
+
+  const ReadTimeInfo = ({ readTime }) => (
+    <div className="flex items-center gap-2">
+      <Clock className="w-4 h-4" />
+      {readTime} min read
+    </div>
+  );
+  
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -52,7 +69,7 @@ export default function Articles() {
   }
 
   return (
-    <div>
+    <div className="">
       {/* Back to WhatsApp */}
       <ChatWhatsApp />
       {/* Back to Top Button */}
@@ -71,7 +88,7 @@ export default function Articles() {
             <div className="grid md:grid-cols-2 gap-8 bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="relative h-[400px] md:h-auto">
                 <img
-                  src={featuredArticle.image_url} // Use image_url from API
+                  src={featuredArticle.image_url} 
                   alt={featuredArticle.title}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -80,12 +97,11 @@ export default function Articles() {
                 <div>
                   <div className="flex items-center gap-4 text-gray-500 text-sm mb-4">
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(featuredArticle.published_at).toLocaleDateString()}
+                      
+                      <DateInfo date={featuredArticle.published_at} />
                     </div>
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {featuredArticle.read_time} {translations[language]?.minRead} {/* Assuming you get read_time in minutes */}
+                    <div className="flex items-center">                    
+                      <ReadTimeInfo readTime= {featuredArticle.read_time} />                 
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold mb-4">{featuredArticle.title}</h3>
@@ -113,7 +129,7 @@ export default function Articles() {
             {regularArticles.slice(0, 6).map((articles) => (
               <div
                 key={articles.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden group"
+                className="bg-white rounded-lg shadow-md overflow-hidden group drop-shadow-2xl"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -125,12 +141,11 @@ export default function Articles() {
                 <div className="p-6">
                   <div className="flex items-center gap-4 text-gray-500 text-sm mb-4">
                     <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(articles.published_at).toLocaleDateString()}
+                      
+                      <DateInfo date={featuredArticle.published_at} />
                     </div>
                     <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {articles.read_time} {translations[language]?.minRead} {/* Assuming you get read_time in minutes */}
+                      <ReadTimeInfo readTime={articles.read_time} />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-gray-600 transition-colors">

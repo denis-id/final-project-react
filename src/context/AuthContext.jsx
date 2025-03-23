@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.path || "/";
+  const [recentUser, setRecentuser] = useState(null);
 
-  // Ambil user dari localStorage saat pertama kali load
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data);
       localStorage.setItem("user", JSON.stringify(data));
       navigate(redirectPath, { replace: true });
+      setRecentuser(response.data.data);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Login failed");
@@ -80,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, register, logout, form, setForm }}>
+    <AuthContext.Provider value={{ user, loading, error, login, register, logout, recentUser, form, setForm }}>
       {children}
     </AuthContext.Provider>
   );

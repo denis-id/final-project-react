@@ -160,7 +160,7 @@ const FilterModal = ({
   const { language, translations } = useLanguage();
 
   return (
-    <div className="fixed inset-0 text-black bg-black bg-opacity-50 z-50 md:hidden">
+    <div className="fixed inset-0 text-black bg-black bg-opacity-50 backdrop-blur-md z-50 md:hidden">
       <div className="absolute right-0 text-black top-0 h-full w-80 bg-white p-6 overflow-y-auto">
         <div className="flex text-black justify-between items-center mb-6">
           <h3 className="text-xl text-black font-bold">Filters</h3>
@@ -202,7 +202,6 @@ export default function Menu() {
   const { language, translations } = useLanguage();
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem("favorites")) || []);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   
@@ -252,17 +251,12 @@ export default function Menu() {
     localStorage.setItem("favorites", JSON.stringify(favorites));
 }, [favorites]);
 
-useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-    document.body.classList.toggle("dark", darkMode);
-}, [darkMode]);
-
 const toggleFavorite = (id) => {
     setFavorites((prev) => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
 };
 
   return (
-    <div className={darkMode ? "dark bg-gray-900 text-white" : "bg-white text-black"}>
+    <div className="">
       <ChatWhatsApp />
       <BackToTop />
       <Hero  
@@ -295,11 +289,6 @@ const toggleFavorite = (id) => {
             >
               <List className="w-5 h-5" />
             </button>
-            <button 
-            onClick={() => setDarkMode(!darkMode)} 
-            className="p-2 rounded-md border hover:bg-gray-200 dark:hover:bg-gray-700">
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
             <button
               onClick={() => setIsFilterMenuOpen(true)}
               className="md:hidden bg-black text-white p-2 rounded-lg"
@@ -312,7 +301,7 @@ const toggleFavorite = (id) => {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Sidebar - Desktop */}
-          <div className="hidden md:block">
+          <div className="hidden md:block w-1/4 p-4 bg-white bg-opacity-80 backdrop-blur-lg shadow-xl rounded-xl">
             <FilterSidebar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
@@ -349,9 +338,9 @@ const toggleFavorite = (id) => {
           )}
 
           {/* Daftar Menu */}
-          <div className="flex-1">
+          <div className="flex-1 p-4 bg-gray-50 rounded-xl shadow-xl">
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(6)].map((_, index) => (
                 <div key={index} className="loader-card">
                    <div class="coffee-spill"></div>
@@ -359,10 +348,11 @@ const toggleFavorite = (id) => {
               ))}
             </div>
             ) : !isLoading && paginatedMenu.length === 0 ? (
-              <div className="text-center py-12">
+              <div className="text-center py-12 shadow-md bg-white p-6 rounded-xl">
                 <Frown className="w-10 h-10 mx-auto text-gray-400" />
                 <p className="text-xl text-gray-600">{translations[language].menuNotFoundDesc}</p>
-                <button onClick={clearFilters} className="mt-4 text-red-500 hover:underline">
+                <button onClick={clearFilters} className="mt-4 text-red-500 font-medium hover:underline transition duration-300"
+                >
                   {translations[language].menuClearFilters}
                 </button>
               </div>
@@ -370,15 +360,17 @@ const toggleFavorite = (id) => {
               <motion.div
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 md:grid-cols-3 gap-8"
-                  : "flex flex-col gap-8"
+                  ? "grid grid-cols-1 md:grid-cols-3 gap-6"
+                  : "flex flex-col gap-6"
               }
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
               {paginatedMenu.map((menu) => (
-                <MenuCard key={menu.id} menu={menu} viewMode={viewMode} />
+                 <div key={menu.id} className="shadow-lg rounded-xl overflow-hidden bg-white">
+                  <MenuCard key={menu.id} menu={menu} viewMode={viewMode} />
+                </div>
               ))}
             </motion.div>
           )}

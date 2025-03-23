@@ -7,6 +7,21 @@ import { fadeInLeft, fadeInRight, staggerContainer } from "../utils/animations";
 import { useLanguage } from "../context/LanguageContext";
 import BackToTop from "../components/BackToTop";
 import ChatWhatsApp from "../components/ChatWhatsApp";
+import PropTypes from 'prop-types';
+
+const RelatedArticleSkeleton = () => (
+  <div className="animate-pulse space-y-4">
+    <div className="flex gap-4">
+      <div className="w-24 h-24 bg-gray-300 rounded-lg"></div>
+      <div className="flex-1">
+        <div className="w-3/4 h-4 bg-gray-300 rounded mb-2"></div>
+        <div className="w-1/2 h-4 bg-gray-300 rounded"></div>
+      </div>
+    </div>
+    <div className="w-full h-4 bg-gray-300 rounded mb-4"></div>
+  </div>
+);
+
 
 const SkeletonLoader = () => (
   <div className="animate-pulse">
@@ -29,7 +44,6 @@ const fadeIn = {
 
 const ArticleDetail = () => {
   const { slug } = useParams();
-  console.log("Slug:", slug);
   const navigate = useNavigate();
   const { translations, language } = useLanguage();
   const [article, setArticle] = useState(null);
@@ -38,54 +52,35 @@ const ArticleDetail = () => {
 
   const { articlesNotFound, backToArticles } = translations[language] || {};
 
-  const [ relatedArticles, setRelatedArticles ] = useState(null);
-
-  const RelatedArticleSkeleton = () => (
-    <div className="animate-pulse space-y-4">
-      <div className="flex gap-4">
-        <div className="w-24 h-24 bg-gray-300 rounded-lg"></div>
-        <div className="flex-1">
-          <div className="w-3/4 h-4 bg-gray-300 rounded mb-2"></div>
-          <div className="w-1/2 h-4 bg-gray-300 rounded"></div>
-        </div>
-      </div>
-      <div className="w-full h-4 bg-gray-300 rounded mb-4"></div>
-    </div>
-  );
-
   useEffect(() => {
-    setTimeout(() => {
-      fetch(`http://localhost:8000/api/articles/${slug}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Article not found");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setArticle(data);
-        fetch(`http://localhost:8000/api/articles/related/${data.id}`)
-        .then((response) => response.json())
-        .then((relatedData) => {
-          setArticle((prevArticle) => ({
-            ...prevArticle,
-            relatedArticles: relatedData,
-          }));
-        });
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
-    }, 1500);
+    const fetchArticle = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/articles/${slug}`);
+        if (!response.ok) {
+          throw new Error("Article not found");
+        }
+        const data = await response.json();
+        setArticle(data);
+
+        const relatedResponse = await fetch(`http://localhost:8000/api/articles/related/${data.id}`);
+        const relatedData = await relatedResponse.json();
+        setArticle((prevArticle) => ({
+          ...prevArticle,
+          relatedArticles: relatedData,
+        }));
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    setTimeout(fetchArticle, 1500);
   }, [slug]);
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <ChatWhatsApp />
-        <BackToTop />
+      <div className="max-w-7xl mx-auto px-4 py-16 white-bg">
         <SkeletonLoader />
       </div>
     );
@@ -94,17 +89,15 @@ const ArticleDetail = () => {
   if (error || !article) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <ChatWhatsApp />
-        <BackToTop />
         <h2 className="text-2xl font-bold mb-4">
-          {translations[language]?.articlesNotFound || "Article not found"}
+          {articlesNotFound || "Article not found"}
         </h2>
         <button 
           onClick={() => navigate("/articles")} 
           className="text-black hover:underline inline-flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {translations[language]?.backToArticles || "Back to Articles"}
+          {backToArticles || "Back to Articles"}
         </button>
       </div>
     );
@@ -113,7 +106,7 @@ const ArticleDetail = () => {
   const articleTranslation = translations[language]?.articles?.find((a) => a.slug === article.slug);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
+    <div className="max-w-7xl mx-auto px-4 py-16 bg-white">
       <ChatWhatsApp />
       <BackToTop />
       <button 
@@ -121,7 +114,7 @@ const ArticleDetail = () => {
         className="mb-8 text-black inline-flex items-center gap-2"
       >
         <ArrowLeft className="w-4 h-4" />
-        {translations[language]?.backToArticles || "Back to Articles"}
+        {backToArticles || "Back to Articles"}
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -147,7 +140,7 @@ const MainContent = ({ article, articleTranslation }) => (
       className="w-full h-[400px] object-cover rounded-xl mb-8" 
     />
     <div className="flex items-center gap-6 text-gray-600 mb-6">
-      <DateInfo date={article.date} />
+    <DateInfo date={article.published_at} />
       <ReadTimeInfo readTime={article.read_time} />
     </div>
     <h1 className="text-4xl font-bold mb-6">{article.title}</h1>
@@ -159,12 +152,26 @@ const MainContent = ({ article, articleTranslation }) => (
   </motion.div>
 );
 
+MainContent.propTypes = {
+  article: PropTypes.object.isRequired,
+  articleTranslation: PropTypes.object,
+};
+
 const DateInfo = ({ date }) => (
   <div className="flex items-center gap-2">
     <Calendar className="w-4 h-4" />
-    {new Date(date).toLocaleDateString()}
+    {new Date(date).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })}
   </div>
 );
+
+
+DateInfo.propTypes = {
+  date: PropTypes.string.isRequired,
+};
 
 const ReadTimeInfo = ({ readTime }) => (
   <div className="flex items-center gap-2">
@@ -172,6 +179,10 @@ const ReadTimeInfo = ({ readTime }) => (
     {readTime} min read
   </div>
 );
+
+ReadTimeInfo.propTypes = {
+  readTime: PropTypes.number.isRequired,
+};
 
 const ShareSection = ({ articleTranslation }) => (
   <div className="border-t border-gray-200 mt-12 pt-8">
@@ -192,17 +203,20 @@ const ShareSection = ({ articleTranslation }) => (
   </div>
 );
 
-  const Sidebar = ({ relatedArticles }) => (
-    <motion.div
-      variants={fadeInRight}
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0, transition: { duration: 0.6 } }}
-      className="lg:col-span-1"
-      relatedsArticles
-      >
-      <div className="sticky top-24">
-        <h2 className="text-2xl font-bold mb-6">
-          Related Articles:
+ShareSection.propTypes = {
+  articleTranslation: PropTypes.object,
+};
+
+const Sidebar = ({ relatedArticles, translations, language }) => (
+  <motion.div
+    variants={fadeInRight}
+    initial={{ opacity: 0, x: 50 }}
+    animate={{ opacity: 1, x: 0, transition: { duration: 0.6 } }}
+    className="lg:col-span-1"
+  >
+    <div className="sticky top-24 bg-white/30 backdrop-blur-sm shadow-xl rounded-lg p-4 drop-shadow-2xl">
+        <h2 className="text-2xl font-bold mb-6 drop-shadow-xl"> 
+          {translations?.[language]?.relatedsArticles || "𝐑𝐞𝐥𝐚𝐭𝐞𝐝 𝐀𝐫𝐭𝐢𝐜𝐥𝐞𝐬"}:
         </h2>
       <motion.div
         variants={staggerContainer}
@@ -212,29 +226,20 @@ const ShareSection = ({ articleTranslation }) => (
       >
         {relatedArticles ? (
           relatedArticles.map((relatedArticle) => (
-          <RelatedArticle key={relatedArticle.slug} relatedArticle={relatedArticle} />
-        ))
-      ) : (
-        <RelatedArticleSkeleton />
-      )}
+            <RelatedArticle key={relatedArticle.slug} relatedArticle={relatedArticle} />
+          ))
+        ) : (
+          <RelatedArticleSkeleton />
+        )}
       </motion.div>
     </div>
     <BackgroundImage />
   </motion.div>
 );
 
-const RelatedArticleSkeleton = () => (
-  <div className="animate-pulse space-y-4">
-    <div className="flex gap-4">
-      <div className="w-24 h-24 bg-gray-300 rounded-lg"></div>
-      <div className="flex-1">
-        <div className="w-3/4 h-4 bg-gray-300 rounded mb-2"></div>
-        <div className="w-1/2 h-4 bg-gray-300 rounded"></div>
-      </div>
-    </div>
-    <div className="w-full h-4 bg-gray-300 rounded mb-4"></div>
-  </div>
-);
+Sidebar.propTypes = {
+  relatedArticles: PropTypes.array,
+};
 
 const RelatedArticle = ({ relatedArticle }) => {
   const { translations, language } = useLanguage();
@@ -250,21 +255,27 @@ const RelatedArticle = ({ relatedArticle }) => {
           />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold mb-2 group-hover:text-gray-600 transition-colors">
-            {relatedArticle.title || relatedArticle.title}
+          <h3 className="font-bold mb-2 group-hover:text-gray-600 transition-colors">
+            {relatedArticle.title}
           </h3>
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <DateInfo date={relatedArticle.date} />
-            <ReadTimeInfo readTime={relatedArticle.readTime || relatedArticle.read_time} />
+          <div className="flex items-center gap-4 text-sm text-gray-800">
+          <div className="flex items-center gap-4 text-sm text-gray-800">
+          <DateInfo date={relatedArticle.published_at} />
+            <ReadTimeInfo readTime={relatedArticle.read_time} />
           </div>
+        </div>
         </div>
       </Link>
     </motion.div>
   );
 };
 
+RelatedArticle.propTypes = {
+  relatedArticle: PropTypes.object.isRequired,
+};
+
 const BackgroundImage = () => (
-  <div className="mt-12 p-6 rounded-xl w-80" style={{ backgroundColor: '#EFE8D9' }}>
+  <div className="mt-12 p-6 rounded-xl w-80" style={{ backgroundColor: 'white' }}>
     <div>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxQH8Hzyv8Lq0Wq3EgMP-UHuz_jKbbArerIQ&s" className="rounded-full object-cover" alt="" />
     </div>

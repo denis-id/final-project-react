@@ -47,7 +47,7 @@ export default function ChatWhatsApp() {
           animate={{ scale: [1, 1.2, 1], opacity: [1, 0.8, 1] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         />
-        <span className="hidden group-hover:inline text-white text-xs transition-opacity duration-300 opacity-0 group-hover:opacity-100">Chat with us</span>
+        <span className="hidden group-hover:inline text-white text-xs transition-opacity duration-300 opacity-0 group-hover:opacity-100">{translations[language]?.chatWithUs}</span>
       </div>
       {showInput && (
         <motion.div

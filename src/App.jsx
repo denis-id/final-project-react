@@ -22,6 +22,7 @@ import { OrderProvider } from "./context/OrderContext";
 import WelcomeAnnouncer from "./components/WelcomeAnnouncer";
 import { MenuProvider } from "./context/MenuContext";
 import { AuthProvider } from "./context/AuthContext";
+import OrderList from "./pages/OrderList";
 
 function App() {
   const [showAnnouncer, setShowAnnouncer] = useState(true);
@@ -67,6 +68,7 @@ function App() {
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/checkout" element={<Checkout />} />
                             <Route path="/menu/:id" element={<MenuDetail />} />
+                            <Route path="/orders" element={<OrderList />} />
                           </Route>
                           <Route path="/login" element={<Login />} />
                           <Route path="/register" element={<Register />} />

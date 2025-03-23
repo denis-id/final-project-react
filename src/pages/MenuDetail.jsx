@@ -1,14 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, Minus, ArrowLeft } from "lucide-react";
-import { PlusCircle } from "lucide-react";
+import { Plus, Minus, ArrowLeft, PlusCircle } from "lucide-react";
 import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
 import { formatPrice } from "../utils/helper";
 import Hero from "../components/Hero";
 import ChatWhatsApp from "../components/ChatWhatsApp";
 import BackToTop from "../components/BackToTop";
-import { notification } from "antd"; // Importing notification from antd
+import { notification } from "antd"; 
 import { useLanguage } from "../context/LanguageContext"; 
 import { useMenuContext } from "../context/MenuContext";
 import loader from "../assets/images/loader.gif";
@@ -21,19 +20,18 @@ export default function MenuDetail() {
   const { menu, getMenuById } = useMenuContext();
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  console.log("selectedVariant", selectedVariant);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
   const t = translations[language]; 
 
+  const subtotal = (selectedVariant?.price || menu?.price) * quantity;
+
   const existingItem = useMemo(() => items.find((item) => item.id === menu?.id), [items, menu]);
 
-  // Simulate checking if user is authenticated (you can replace this with your actual auth check)
   useEffect(() => {
     const checkAuth = () => {
-      // Replace this logic with your actual authentication check
-      const user = localStorage.getItem("user"); // For example, checking localStorage for user data
+      const user = localStorage.getItem("user"); 
       setIsAuthenticated(user !== null);
     };
     checkAuth();
@@ -55,7 +53,12 @@ export default function MenuDetail() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-screen overflow-hidden bg-[#F9F1C9]">
-        <img src={loader} alt="Loading..." className="w-full h-full object-cover" />
+        <motion.img 
+          src="https://i.pinimg.com/originals/86/3b/8c/863b8c5d34a34a718db8333507b49ee5.gif"
+          alt="Loading..."        
+          transition={{ repeat: Infinity, duration: 1 }}
+          className="w-full h-full object-cover" 
+        />
       </div>
     );
   }
@@ -74,23 +77,57 @@ export default function MenuDetail() {
 
   // Handle adding or updating the item in the cart
   const handleAddToCart = () => {
+    if (!selectedVariant) {
+      notification.warning({
+        message: "Please select a variant",
+        placement: "top",
+      });
+      return;
+    }
+
     const quantityNumber = Number(quantity);
+    const existingItem = items.find((item) => item.id === menu.id && item.variant_id === selectedVariant.id);
 
     if (existingItem) {
-      updateItemQuantity(menu.id, existingItem.quantity + quantityNumber);
+      updateItemQuantity(existingItem.id, existingItem.quantity + quantityNumber);
       notification.success({
-        message: `Updated ${menu.name} in cart`,
-        description: `${menu.name} quantity updated.`,
+        message: `Updated ${menu.name} (${selectedVariant.size}) in cart`,
+        description: `Quantity updated to ${existingItem.quantity + quantityNumber}.`,
         placement: "top",
       });
     } else {
-      addItem({ ...menu, price: menu.price, variant_id: selectedVariant.id }, quantityNumber);
-      notification.success({
-        message: `Added ${menu.name} to cart`,
-        description: `${menu.name} added to your cart.`,
-        placement: "top",
-        style: { zIndex: 999 },
-      });
+      addItem({ 
+        ...menu, 
+        id: `${menu.id}-${selectedVariant.id}`,
+        variant_id: selectedVariant.id,
+        price: selectedVariant.price,
+        variant_name: selectedVariant.size,
+        variants: menu.variants,
+      }, 
+      quantityNumber
+    );
+     notification.success({
+                    message: `Added ${menu.name} (${selectedVariant.size}) to cart`,
+                    description: (
+                      <span>
+                        {menu.name} ({selectedVariant?.size}) added to your cart.{" "}
+                        <a
+                          href="/cart"
+                          style={{
+                            color: "#1890ff",
+                            fontWeight: "bold",
+                            textDecoration: "underline",
+                          }}
+                          onMouseEnter={(e) => (e.target.style.textDecoration = "underline")}
+                          onMouseLeave={(e) => (e.target.style.textDecoration = "none")}
+                        >
+                          Proceed your order here
+                        </a>
+                      </span>
+                    ),
+                    placement: "top",
+                    duration: 4,
+                  });
     }
 
     setQuantity(1);
@@ -104,14 +141,14 @@ export default function MenuDetail() {
           <>
             Please login to add items to your cart. <br />
             <a
-              href="/login" // Link to the login page
+              href="/login"
               style={{
                 color: "#1890ff",
                 fontWeight: "bold",
-                textDecoration: "underline", // Add underline
+                textDecoration: "underline", 
               }}
-              onMouseEnter={(e) => e.target.style.textDecoration = 'underline'} // Add hover effect
-              onMouseLeave={(e) => e.target.style.textDecoration = 'none'} // Remove hover effect
+              onMouseEnter={(e) => e.target.style.textDecoration = 'underline'} 
+              onMouseLeave={(e) => e.target.style.textDecoration = 'none'} 
             >
               Login Here
             </a>
@@ -127,26 +164,45 @@ export default function MenuDetail() {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-#FBF3CB backdrop-blur-md shadow-xl">
       <ChatWhatsApp />
       <BackToTop />
 
       {menu.images && <Hero title={t?.coverMenuDetailTitle} description={t?.menuDetailDesc} images={menu.images} />}
 
       <div className="max-w-7xl mx-auto px-4 py-16">
-        <button onClick={() => navigate("/menu")} className="mb-8 text-gray-600 hover:text-black inline-flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4 text-black" />
+        <button 
+          onClick={() => navigate("/menu")} 
+          className="mb-8 text-gray-600 hover:text-black inline-flex items-center gap-2 transition-all duration-300 hover:translate-x-1"
+        >
+          <ArrowLeft className="w-5 h-5 text-black" />
           {t?.backToMenu}
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="aspect-square overflow-hidden rounded-lg">
+          <motion.div 
+            className="aspect-square overflow-hidden rounded-lg"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            >
             <img src={menu.images} alt={menu.name} className="w-full h-full object-cover" />
-          </div>
+          </motion.div>
 
           <div>
-            <h1 className="text-3xl font-bold mb-4">{menu.name}</h1>
-            <p className="text-2xl text-gray-800 mb-6">{formatPrice(selectedVariant?.price || menu.price)}</p>
+            <motion.h1 
+            className="text-3xl font-bold mb-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            >
+              {menu.name}
+            </motion.h1>
+            
+            <div className="mb-6">
+              <h2 className="font-semibold mb-2">Subtotal:</h2>
+              <p className="text-gray-800 text-xl">{formatPrice(subtotal)}</p>
+            </div>
 
             {/* Menu Description */}
             <div className="mb-6">
@@ -160,26 +216,28 @@ export default function MenuDetail() {
             {menu.variants?.length > 0 && (
               <div className="mb-6">
                 <h2 className="font-semibold mb-2"> {translations[language].selectVariant}:</h2>
-                <select className="w-full p-2 border rounded-md" value={selectedVariant?.id || ""} onChange={(e) => setSelectedVariant(menu.variants.find(v => v.id == e.target.value))}>
+                <div className="space-y-4">
                   {menu.variants.map((variant) => (
-                    <option key={variant.id} 
-                value={variant.id} 
-                style={{ color: "black" }}
-                >
-               {translations[language].selectSize}:{" "}
-               <span 
-               style={{ color: "blue" }}
-               >
-                {variant.size}
-                </span> -{" "}
-               {translations[language].selectStock}:{" "}
-               <span style={{ color: "blue" }}
-               >
-                {variant.stock}
-                </span>
-             </option>                  
-            ))}
-                </select>
+                    <div key={variant.id} className="flex items-center justify-between border p-4 rounded-md">
+                      <div>
+                        <p className="font-medium text-black">
+                          {variant.size} - {formatPrice(variant.price)}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {translations[language].selectStock}: {variant.stock}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setSelectedVariant(variant)}
+                        className={`p-2 rounded-md ${
+                          selectedVariant?.id === variant.id ? "bg-orange-900 text-white" : "bg-gradient-to-r from-orange-900 text-black hover:scale-110"
+                        }`}
+                      >
+                        Select
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -208,8 +266,8 @@ export default function MenuDetail() {
             {/* Add to Cart Button */}
             <div className="flex flex-col items-center">
               <motion.button
-                onClick={handleAddToCartWithAuthCheck} // Use the new function to check authentication
-                className={`w-full bg-black text-white py-4 rounded-md flex items-center justify-center gap-2 transition-all ${
+                onClick={handleAddToCartWithAuthCheck}
+                  className={`w-full bg-gradient-to-r from-orange-900 to-gray-800 text-white py-4 rounded-md hover:opacity-80 mt-4 flex items-center justify-center gap-2 transition-all duration-300 backdrop-blur-lg shadow-lg hover:scale-110 ${
                   selectedVariant && quantity > selectedVariant.stock
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-gray-800"
@@ -224,9 +282,7 @@ export default function MenuDetail() {
                 whileTap={{ scale: 0.9 }}
               >
                 <PlusCircle className="w-5 h-5" />
-                <span>
-                  {translations[language].addToCart}
-                </span>
+                <span>{translations[language].addToCart}</span>
               </motion.button>
             </div>
 

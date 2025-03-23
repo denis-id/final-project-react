@@ -5,14 +5,14 @@ import { useCart } from "react-use-cart";
 import kohiMenu from "../assets/images/kohiMenu.png";
 import { useLanguage } from "../context/LanguageContext";
 import { Modal } from "antd";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
+import { useAuth } from "../context/AuthContext"; 
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { items } = useCart();
   const { language, translations, toggleLanguage } = useLanguage();
-  const { user, logout } = useAuth(); // Ambil user dan logout dari AuthContext
+  const { user, logout } = useAuth(); 
 
   const totalItems = items?.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -40,6 +40,7 @@ export default function Navbar() {
     { path: "/menu", label: "navbarMenu" },
     { path: "/contact", label: "contact" },
     { path: "/articles", label: "navbarArticles" },
+    { path: "/orders", label: "orders" },
   ];
 
   return (
@@ -118,14 +119,35 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Language Toggle Button */}
-            <div className="hidden md:block">
-              <button onClick={toggleLanguage} className="button">
-                {translations[language]?.toggleLanguage}
-              </button>
+             <div className="hidden md:block">
+            <button onClick={toggleLanguage} type="button" class="btn">
+            <strong>{translations[language]?.toggleLanguage}</strong>
+              <div id="container-stars">
+                <div id="stars"></div>
+              </div>
+
+              <div id="glow">
+                <div class="circle"></div>
+                <div class="circle"></div>
+              </div>
+            </button>
             </div>
+            
+            <div className="flex items-center space-x-4 md:hidden">
+            <Link to="/cart" className="relative">
+                <ShoppingCart
+                  className={`w-6 h-6 transition-colors ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className={isScrolled ? "text-black" : "text-white"}
@@ -145,12 +167,6 @@ export default function Navbar() {
                   </Link>
                 ))}
                 
-                 <Link to="/cart" className="flex items-center text-black hover:opacity-75">
-                  <ShoppingCart className="w-6 h-6 mr-2" />
-                  <span>
-                    {translations[language]?.cart || "Cart"} ({totalItems})
-                  </span>
-                </Link>
 
                 {/* Tampilkan Login atau Logout di Mobile */}
                 {user ? (
@@ -173,10 +189,18 @@ export default function Navbar() {
 
       {/* Mobile Sticky Language Button in Center */}
       <div className="md:hidden fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50">
-        <button onClick={toggleLanguage} className="button">
-          {translations[language]?.toggleLanguage || "Change Language"}
-        </button>
-      </div>
+       <button onClick={toggleLanguage} type="button" class="btn">
+            <strong>{translations[language]?.toggleLanguage}</strong>
+              <div id="container-stars">
+                <div id="stars"></div>
+              </div>
+
+              <div id="glow">
+                <div class="circle"></div>
+                <div class="circle"></div>
+              </div>
+            </button>
+        </div>
     </>
   );
 }

@@ -60,7 +60,7 @@ export const menu = [
   {
     id: 8,
     name: "Latte Machiato",
-    price: 23775,
+    price: 23500,
     image: "https://www.kultbohne.de/wp-content/uploads/2024/07/Macchiato-01.webp",
     category: "House Blend Coffee",
     description: "Latte macchiato is an espresso with milk and a spoonful of foamed milk on top.",
@@ -148,7 +148,7 @@ export const menu = [
   {
     id: 19,
     name: "Ice Lychee Tea",
-    price: 21182,
+    price: 21500,
     image: "https://dcostseafood.id/wp-content/uploads/2021/12/LYCHEE-TEA.jpg",
     category: "Non Coffee",
     description: "Ice lychee tea is a sweet and refreshing drink that combines black tea with lychee fruit.",

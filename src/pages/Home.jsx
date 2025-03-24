@@ -27,10 +27,14 @@ const staggerContainer = {
 export default function Home() {
   return (
     <motion.div initial="initial" animate="animate" variants={staggerContainer}>
+
       <ChatWhatsApp />
       <BackToTop />
+
       <motion.div variants={fadeIn}>
+
         <HeroIndex />
+        
       </motion.div>
       
       <motion.div className="relative w-full max-w-3xl mx-auto overflow-hidden" variants={fadeIn}>

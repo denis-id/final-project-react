@@ -165,8 +165,7 @@ export default function Navbar() {
                   <Link key={label} to={path} className="text-black hover:opacity-75">
                     {translations[language]?.[label] || label}
                   </Link>
-                ))}
-                
+                ))}              
 
                 {/* Tampilkan Login atau Logout di Mobile */}
                 {user ? (

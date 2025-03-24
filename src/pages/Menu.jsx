@@ -160,7 +160,12 @@ const FilterModal = ({
   const { language, translations } = useLanguage();
 
   return (
-    <div className="fixed inset-0 text-black bg-black bg-opacity-50 backdrop-blur-md z-50 md:hidden">
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: isFilterMenuOpen ? "0%" : "100%" }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-0 text-black bg-black bg-opacity-50 backdrop-blur-md z-50 md:hidden"
+      >      
       <div className="absolute right-0 text-black top-0 h-full w-80 bg-white p-6 overflow-y-auto">
         <div className="flex text-black justify-between items-center mb-6">
           <h3 className="text-xl text-black font-bold">Filters</h3>
@@ -185,6 +190,7 @@ const FilterModal = ({
             setSortBy={setSortBy}
             clearFilters={clearFilters}
             setCurrentPage={setCurrentPage}
+            isLoadingCategories={isLoadingCategories}
           />
           <button
             onClick={() => setIsFilterMenuOpen(false)}
@@ -194,7 +200,7 @@ const FilterModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -356,7 +362,28 @@ const toggleFavorite = (id) => {
                   {translations[language].menuClearFilters}
                 </button>
               </div>
-            ) : (
+              ) : (
+              <div>
+              {/* Menampilkan informasi halaman */}
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-gray-600">Page {currentPage} of {totalPages}</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
               <motion.div
               className={
                 viewMode === "grid"
@@ -368,11 +395,35 @@ const toggleFavorite = (id) => {
               transition={{ duration: 0.5 }}
             >
               {paginatedMenu.map((menu) => (
-                 <div key={menu.id} className="shadow-lg rounded-xl overflow-hidden bg-white">
-                  <MenuCard key={menu.id} menu={menu} viewMode={viewMode} />
+                 <div 
+                  key={menu.id} 
+                  className="shadow-lg rounded-xl overflow-hidden bg-white"
+                 >
+                  <MenuCard 
+                    key={menu.id} 
+                    menu={menu} 
+                    viewMode={viewMode} 
+                    isFavorite={favorites.includes(menu.id)}
+                    toggleFavorite={() => toggleFavorite(menu.id)} 
+                  />
                 </div>
               ))}
             </motion.div>
+             {/* Pagination */}
+              <div className="flex justify-center mt-8 space-x-2">
+                {Array.from({ length: Math.min(totalPages, 6) }, (_, index) => index + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 rounded-md border transition ${
+                      currentPage === page ? "bg-black text-white" : "hover:bg-gray-200"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -6,7 +6,7 @@ const WelcomeAnnouncer = ({ onContinue }) => {
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
     useEffect(() => {
-      const handleKeyPress = (event) => {
+      const handleKeyPress = () => {
         onContinue();
       };
   
@@ -21,6 +21,7 @@ const WelcomeAnnouncer = ({ onContinue }) => {
   
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-[#3E2723] drop-shadow-2xl">
+      
       {/* Coffee steam animation */}
       {[...Array(5)].map((_, i) => (
         <motion.div

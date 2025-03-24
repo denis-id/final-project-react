@@ -1,25 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Lock, User, ArrowRight, ArrowLeft } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import Swal from "sweetalert2";
 import '../styles/SubmitButton.css';
 import globalBackground from '../assets/images/globalBackground.gif';
 import kohiMenu from "../assets/images/kohiMenu.png";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { form, setForm, login, user } = useAuth(); // Ambil user dari useAuth
+  const { form, setForm, login, user } = useAuth(); 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await login(); // Panggil login dari context
+    await login();
     setLoading(false);
     setSuccess(true);
+    Swal.fire({
+      title: "Successfully Logged In!",
+      text: `Welcome ${form.name || "User"} (${form.email || "No Email"})!`,
+      icon: "success",
+      confirmButtonText: "OK"
+    });
     setTimeout(() => {
       setSuccess(false);
-    }, 3000); // Jeda 3 detik setelah menampilkan sukses
+    }, 3000); 
   };
 
   return (
@@ -47,7 +55,7 @@ export default function Login() {
           <>
             <div className="text-center">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h2>
-              <p className="mt-2 text-gray-600">Sign in to <strong className="text-brown-700">𝐊𝐨𝐡𝐢 𝐂offeé ☕︎</strong> account</p>
+              <p className="mt-2 text-gray-600">Sign in to <span className="text-brown-700">𝐊𝐨𝐡𝐢 𝐂offeé ☕︎</span> account</p>
             </div>
             <br />
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,15 +100,22 @@ export default function Login() {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     required
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 pl-12 pr-12 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                     placeholder="Enter your password"
                   />
                   <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                  <button
+                    type="button"
+                    className="absolute right-4 top-3.5 h-5 w-5 text-gray-400 focus:outline-none"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </button>
                 </div>
               </div>
 

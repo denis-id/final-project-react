@@ -32,22 +32,6 @@ const OrderList = () => {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
     exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
   };
-
-  const handleDelete = (orderId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteOrder(orderId);
-      }
-    });
-  };
   
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -76,41 +60,6 @@ const OrderList = () => {
     });
   
     doc.save("order_list.pdf");
-  };
-  
-  const deleteOrder = async (orderId) => {
-    const user = localStorage.getItem("user");
-    const parsedUser = user ? JSON.parse(user) : null;
-    const token = parsedUser?.data?.token || recentUser?.token;
-  
-    if (!token) {
-      console.error("Token tidak ditemukan! User harus login.");
-      return;
-    }
-  
-    try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      setOrders((prevOrders) => prevOrders.filter(order => order.id !== orderId));
-      Swal.fire({
-        title: "Deleted!",
-        text: "Order has been deleted successfully.",
-        icon: "success",
-        timer: 2000, 
-        showConfirmButton: false
-      });
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to delete the order.",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false
-      });
-    }
   };
 
   const getOrders = useCallback(async () => {
@@ -334,19 +283,6 @@ const OrderList = () => {
               >
                 Download PDF 
               </motion.button>
-
-              {/* Tombol Delete */}
-              <motion.button
-                onClick={() => handleDelete(order.id)}
-                className={`w-full px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition ${
-                  isProcessing === order.id ? "cursor-not-allowed" : ""
-                }`}
-                disabled={isProcessing === order.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {translations[language]?.orderListDelete}
-              </motion.button>
             </div>
           </div>
         </div>
@@ -378,7 +314,6 @@ const OrderList = () => {
                 <th className="border p-2">Status</th>
                 <th className="border p-2">Invoice</th>
                 <th className="border p-2">{translations[language]?.orderListDetails}</th>
-                <th className="border p-2">{translations[language]?.orderListDelete}</th>
                 <th className="border p-2">PDF</th>
               </tr>
             </thead>
@@ -452,16 +387,6 @@ const OrderList = () => {
                         whileTap={{ scale: 0.95 }}
                       >
                         {isProcessing === order.id ? "Processing..." : <FaEye size={18} />}
-                      </motion.button>
-                    </td>
-                    <td className="border p-2">
-                      <motion.button
-                        onClick={() => handleDelete(order.id)}
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <FaTrash size={18} />
                       </motion.button>
                     </td>
                     <td className="border p-2">

@@ -187,7 +187,7 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile Sticky Language Button in Center */}
-      <div className="md:hidden fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="md:hidden fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
        <button onClick={toggleLanguage} type="button" class="btn">
             <strong>{translations[language]?.toggleLanguage}</strong>
               <div id="container-stars">

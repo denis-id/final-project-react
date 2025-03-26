@@ -24,16 +24,21 @@ export const AuthProvider = ({ children }) => {
   const login = async () => {
     setLoading(true);
     setError(null);
+    console.log("Login attempt with:", form);
+    console.log("Sending request to:", `${process.env.REACT_APP_API_URL}/api/login`);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/login/`,
-        JSON.stringify(form),
+        `${process.env.REACT_APP_API_URL}/api/login`,
+        form,
         {
           headers: {
             "Content-Type": "application/json",
+            "Accept": "application/json",
           },
+          withCredentials: true,
         }
       );
+      console.log("Login successful:", response.data);
 
       const data = response.data;
       setUser(data);
@@ -51,16 +56,18 @@ export const AuthProvider = ({ children }) => {
   const register = async () => {
     setLoading(true);
     setError(null);
+    console.log("Register attempt with:", form);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/register/`,
-        JSON.stringify(form),
+        `${process.env.REACT_APP_API_URL}/api/register`,
+        form,
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
+      console.log("Registration successful:", response.data);
 
       const data = response.data;
       setUser(data);

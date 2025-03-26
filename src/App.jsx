@@ -23,6 +23,7 @@ import WelcomeAnnouncer from "./components/WelcomeAnnouncer";
 import { MenuProvider } from "./context/MenuContext";
 import { AuthProvider } from "./context/AuthContext";
 import OrderList from "./pages/OrderList";
+import ErrorPage from "./pages/ErrorPage"; 
 
 function App() {
   const [showAnnouncer, setShowAnnouncer] = useState(true);
@@ -72,6 +73,7 @@ function App() {
                           </Route>
                           <Route path="/login" element={<Login />} />
                           <Route path="/register" element={<Register />} />
+                          <Route path="*" element={<ErrorPage />} />
                         </Routes>
                       </main>
                     </div>

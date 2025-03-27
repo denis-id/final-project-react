@@ -14,6 +14,13 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const templateResponses = {
+    "I'd like to order ": "Sure! What would you like to order?",
+    "How to order?": "To order, simply select your items from the menu and proceed to checkout. You can order <a href='/menu' class='text-blue-500 underline'>here</a>.",
+    "What is the most ordered menu?": "Our most ordered menu is Espresso Coffee",
+    "How much does it cost?": "No worries, our prices are affordable",
+  };
+
   useEffect(() => {
     console.log("Chatbot muncul setelah 500ms");
     const timeout = setTimeout(() => setIsVisible(true), 500);
@@ -35,6 +42,14 @@ export default function ChatBot() {
     setCustomMessage("");
     setIsLoading(true);
   
+    if (templateResponses[customMessage]) {
+      setTimeout(() => {
+        setChatHistory((prevChat) => [...prevChat, { sender: "bot", text: templateResponses[customMessage] }]);
+        setIsLoading(false);
+      }, 1000);
+      return;
+    }
+  
     try {
       const response = await axios.post(
         "https://dashboard.denis-id.online/api/chatbot", 
@@ -50,7 +65,14 @@ export default function ChatBot() {
     } catch (error) {
       console.error("Error fetching response: ", error);
       setChatHistory((prevChat) => [...prevChat, { sender: "bot", text: "Maaf, terjadi kesalahan." }]);
+      setIsLoading(false);
     }
+  };
+
+  const handleTemplateClick = (message) => {
+    setCustomMessage(message);
+    handleSend(String(message));
+    setTimeout(handleSend, 100);
   };
 
   const handleClose = () => {
@@ -103,15 +125,26 @@ export default function ChatBot() {
           <div className="h-40 overflow-y-auto border-b mb-2">
             {chatHistory.map((chat, index) => (
               <div key={index} className={`p-1 ${chat.sender === "user" ? "text-right" : "text-left"}`}>
+                 {chat.sender === "bot" && chat.text.includes("<a") ? (
                 <span
                   className={`inline-block p-1 rounded-md 
                     ${chat.sender === "user" 
                     ? "bg-gradient-to-r from-red-500 to-red-700 text-white" 
                     : "bg-gradient-to-r from-gray-200 to-gray-300 text-black"}`}
                   style={{ whiteSpace: "pre-line" }} 
-                  >
+                  dangerouslySetInnerHTML={{ __html: chat.text }}
+                  />
+                ) : (
+                  <span
+                  className={`inline-block p-1 rounded-md 
+                    ${chat.sender === "user" 
+                    ? "bg-gradient-to-r from-red-500 to-red-700 text-white" 
+                    : "bg-gradient-to-r from-gray-200 to-gray-300 text-black"}`}
+                  style={{ whiteSpace: "pre-line" }}
+                >
                   {chat.text}
                 </span>
+                  )}
               </div>
             ))}
             {isLoading && ( 
@@ -126,6 +159,19 @@ export default function ChatBot() {
             </motion.svg>
            )}
           </div>
+          <div className="flex flex-wrap gap-2 mb-2">
+          {["I'd like to order ", "How to order?", "What is the most ordered menu?", "How much does it cost?"].map((msg, index) => (
+          <motion.button
+              key={index}
+              onClick={() => handleTemplateClick(msg)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-gray-200 to-gray-300 text-black px-3 py-2 rounded-lg shadow-md hover:from-gray-300 hover:to-gray-400 transition-all duration-300"
+            >
+              {msg}
+          </motion.button>
+      ))}
+    </div>
           <div className="flex items-center gap-2">
             <input
               type="text"

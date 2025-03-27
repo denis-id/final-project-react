@@ -51,6 +51,7 @@ export default function Register() {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password,
+        password_confirmation: formData.confirmPassword,
       });
 
       Swal.fire({

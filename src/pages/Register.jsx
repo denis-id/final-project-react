@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useAuth } from "../context/AuthContext"; // Menggunakan useAuth()
+import axios from "axios";
 import Swal from "sweetalert2";
 import "../styles/SubmitButton.css";
-import globalBackground from "../assets/images/globalBackground.gif";
+import globalBackground from '../assets/images/globalBackground.gif';
 import kohiMenu from "../assets/images/kohiMenu.png";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, loading, error } = useAuth(); 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,8 +17,18 @@ export default function Register() {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const getPasswordStrength = (password) => {
+    if (password.length === 0) return "";
+    if (password.length < 6) return "Weak";
+    if (password.length === 8) return "Medium";
+    if (password.length > 8) return "Strong";
+  };
+
+  const passwordStrength = getPasswordStrength(formData.password);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +42,7 @@ export default function Register() {
     if (!firstName.trim()) newErrors.firstName = "First name is required";
     if (!lastName.trim()) newErrors.lastName = "Last name is required";
     if (!email.trim()) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
     if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
     if (confirmPassword !== password) newErrors.confirmPassword = "Passwords do not match";
 
@@ -43,15 +53,17 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    
     if (!validateForm()) return;
 
+    setLoading(true);
     try {
-      await register({
+      await axios.post("https://dashboard.denis-id.online/api/register", {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password,
         password_confirmation: formData.confirmPassword,
+      }, {
+        headers: { "Content-Type": "application/json" },
       });
 
       Swal.fire({
@@ -65,9 +77,11 @@ export default function Register() {
         navigate("/login");
       });
 
-    } catch (err) {
-      console.error("Registration error:", err);
-      setErrors({ general: err?.message || "Registration failed" });
+    } catch (error) {
+      console.error("Registration error:", error.response?.data);
+      setErrors(error.response?.data || { general: "Registration failed" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,7 +97,6 @@ export default function Register() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Create Account</h2>
           <p className="mt-2 text-gray-600">Join us and discover premium coffee</p>
         </div>
-        {errors.general && <p className="text-red-600 text-sm text-center">{errors.general}</p>}
         <form className="submit" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {["firstName", "lastName"].map((field) => (
@@ -142,7 +155,22 @@ export default function Register() {
                   </>
                 )}
               </div>
-              {errors[field] && <p className="text-red-600 text-sm mt-1">{errors[field]}</p>}
+              {field === "password" && formData.password && (
+                <p className={`text-sm mt-1 ${
+                  passwordStrength === "Strong" ? "text-green-600" :
+                  passwordStrength === "Medium" ? "text-yellow-600" :
+                  "text-red-600"
+                }`}>
+                  Password strength: {passwordStrength}
+                </p>
+              )}
+              {field === "confirmPassword" && formData.confirmPassword && (
+                <p className={`text-sm mt-1 ${
+                  formData.password === formData.confirmPassword ? "text-green-600" : "text-red-600"
+                }`}>
+                  {formData.password === formData.confirmPassword ? "Passwords match" : "Passwords do not match"}
+                </p>
+              )}
             </div>
           ))}
           <br />

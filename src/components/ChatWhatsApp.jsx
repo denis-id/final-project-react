@@ -37,7 +37,7 @@ export default function ChatBot() {
   
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/chatbot", 
+        "https://dashboard.denis-id.online/api/chatbot", 
         { message: customMessage }
       );
   

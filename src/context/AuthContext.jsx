@@ -33,9 +33,7 @@ export const AuthProvider = ({ children }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
           },
-          withCredentials: true,
         }
       );
       console.log("Login successful:", response.data);
@@ -76,6 +74,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Registration failed");
+      throw new Error(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
